@@ -1,10 +1,10 @@
 
-
+DROP DATABASE IF EXISTS lousi;
 
 CREATE DATABASE lousi;
 
 
-CREATE TABLE tile(
+CREATE TABLE IF NOT EXISTS `tile`(
 `tilename` varchar (15) NOT NULL,
 `firstvalue` int NOT NULL,
 `secondvalue` int NOT NULL,
@@ -49,7 +49,7 @@ Insert into tile(tilename,firstvalue,secondvalue)values
 ('6-6',6,6);
 
 
-CREATE TABLE players (
+CREATE TABLE IF NOT EXISTS `players` (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `handtiles` varchar(10) NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE players (
     FOREIGN KEY (handtiles) References tile (tilename)
 );
 
-Create table  gameStatus(
+Create TABLE IF NOT EXISTS `gameStatus`(
 `id` int NOT NULL AUTO_INCREMENT,
     `session_id` int NOT NULL,
     `status` enum(
