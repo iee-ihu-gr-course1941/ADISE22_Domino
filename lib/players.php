@@ -47,9 +47,6 @@ function set_user($b,$input) {
 	$st2 = $mysqli->prepare($sql);
 	$st2->bind_param('sss',$name,$name,$b);
 	$st2->execute();
-
-
-	
 	update_game_status();
 	$sql = 'select * from players where id=?';
 	$st = $mysqli->prepare($sql);
@@ -59,6 +56,13 @@ function set_user($b,$input) {
 	header('Content-type: application/json');
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 	
-	
+}
+
+function handle_user($method, $b,$input) {
+	if($method=='GET') {
+		show_user($b);
+	} else if($method=='PUT') {
+        set_user($b,$input);
+    }
 }
 ?>
