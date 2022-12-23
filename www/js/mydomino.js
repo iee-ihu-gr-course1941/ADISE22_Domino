@@ -37,6 +37,13 @@ function login_error(data,y,z,c) {
 }
 
 
+function game_status_update() {
+	
+	clearTimeout(timer);
+	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": me.token} });
+}
+
+
 
 
 
