@@ -12,7 +12,7 @@ function login_to_game() {
 	}
 //	var p_color = $('#pcolor').val();
 //	draw_empty_board(p_color);
-//	fill_board();
+//	sharetiles();
 	
 	$.ajax({url: "domino.php/players/", 
 			method: 'PUT',
