@@ -14,4 +14,7 @@ function show_tiles($x,$y) {
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
+
+
+
 <?>
