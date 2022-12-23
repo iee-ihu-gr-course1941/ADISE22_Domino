@@ -1,14 +1,15 @@
 
-DROP DATABASE IF EXISTS lousi;
+
 
 CREATE DATABASE lousi;
 
 
-CREATE TABLE IF NOT EXISTS `tile`(
+CREATE TABLE tile(
 `tilename` varchar (15) NOT NULL,
 `firstvalue` int NOT NULL,
 `secondvalue` int NOT NULL,
 primary key(tilename)
+
 );
 
 Insert into tile(tilename,firstvalue,secondvalue)values 
@@ -48,7 +49,7 @@ Insert into tile(tilename,firstvalue,secondvalue)values
 ('6-6',6,6);
 
 
-CREATE TABLE IF NOT EXISTS `players` (
+CREATE TABLE players (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `handtiles` varchar(10) NOT NULL,
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     FOREIGN KEY (handtiles) References tile (tilename)
 );
 
-Create TABLE IF NOT EXISTS `gameStatus`(
+Create table  gameStatus(
 `id` int NOT NULL AUTO_INCREMENT,
     `session_id` int NOT NULL,
     `status` enum(
@@ -79,12 +80,10 @@ Create TABLE IF NOT EXISTS `gameStatus`(
 );
 
 
-CREATE TABLE IF NOT EXISTS `board` (
+CREATE TABLE board (
 	`tile` varchar(10),
 	`last_change`  timestamp NULL DEFAULT current_timestamp() 
 );
-
-
 
 DROP PROCEDURE IF EXISTS `sharepiles`;
 DELIMITER //
@@ -102,6 +101,8 @@ BEGIN
 	
     END//
 DELIMITER ;
+
+
 
 
 
