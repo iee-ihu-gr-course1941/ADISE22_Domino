@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `tile`(
 `firstvalue` int NOT NULL,
 `secondvalue` int NOT NULL,
 primary key(tilename)
-
 );
 
 Insert into tile(tilename,firstvalue,secondvalue)values 
