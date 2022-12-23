@@ -80,13 +80,29 @@ Create TABLE IF NOT EXISTS `gameStatus`(
 );
 
 
-CREATE TABLE board (
+CREATE TABLE IF NOT EXISTS `board` (
 	`tile` varchar(10),
 	`last_change`  timestamp NULL DEFAULT current_timestamp() 
 );
 
 
 
+DROP PROCEDURE IF EXISTS `sharepiles`;
+DELIMITER //
+CREATE PROCEDURE `sharepiles`()
+BEGIN
+	declare  pile int;
+    declare player int;
+    declare share int;
+	
+	    SELECT COUNT(*) INTO player_count FROM players;
+        SELECT COUNT(*) INTO pile FROM piles;
+        SET share = pile / player_count;
+        UPDATE piles
+        SET piles = share;
+	
+    END//
+DELIMITER ;
 
 
 
