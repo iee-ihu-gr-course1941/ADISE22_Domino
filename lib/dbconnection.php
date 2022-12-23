@@ -2,11 +2,10 @@
 	$host = 'localhost';
 	$user = 'root';
         //$user = 'user';
-	$pass = '';
 	$database = 'lousi';
 	$port = '3306';
 	
-	$dbcon = new mysqli($host,$user,$pass,$database,$port);
+	$dbcon = new mysqli($host,$user,$database,$port);
 	$connected = false;
 	if ($dbcon !== false) {
 		//echo "DB connected.";

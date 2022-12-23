@@ -2,6 +2,8 @@
 
 
 CREATE DATABASE lousi;
+
+
 CREATE TABLE tile(
 `tilename` varchar (15) NOT NULL,
 `firstvalue` int NOT NULL,
