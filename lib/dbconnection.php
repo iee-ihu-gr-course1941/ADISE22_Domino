@@ -1,11 +1,15 @@
 <?php
+
+	//session_start();
+	
 	$host = 'localhost';
 	$user = 'root';
+	$pass = '';
         //$user = 'user';
 	$database = 'lousi';
 	$port = '3306';
 	
-	$dbcon = new mysqli($host,$user,$database,$port);
+	$dbcon = new mysqli($host,$user,$pass,$database,$port);
 	$connected = false;
 	if ($dbcon !== false) {
 		//echo "DB connected.";
