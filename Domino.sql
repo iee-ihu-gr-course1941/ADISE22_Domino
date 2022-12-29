@@ -12,7 +12,7 @@ CREATE TABLE tile(
 `secondvalue` int NOT NULL,
 primary key(tilename)
 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -55,10 +55,14 @@ CREATE TABLE players (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     /*`handtiles` varchar(10) ,*/
+    `token` varchar(100) DEFAULT NULL,
     `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     PRIMARY KEY (id)
    /* FOREIGN KEY (handtiles) References tile (tilename)*/
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+
+
 
 DROP TABLE IF EXISTS `gameStatus`;
 Create table  gameStatus(
@@ -72,22 +76,36 @@ Create table  gameStatus(
     ) NOT NULL DEFAULT 'initialized',
     `p_turn` int NOT NULL DEFAULT 1,
     `n_players` int NOT NULL,
-    `winner` enum('0', '1', '2', '3', '4') NOT NULL,
-    `loser` enum('0', '1', '2', '3', '4') NOT NULL,
-    `first_round` BOOLEAN NOT NULL DEFAULT TRUE,
+    `winner` enum('0', '1', '2', '3', '4') DEFAULT NULL,
+    `loser` enum('0', '1', '2', '3', '4') DEFAULT NULL,
+    /*`first_round` BOOLEAN NOT NULL DEFAULT TRUE,*/
     /*`last_change` timestamp DEFAULT NOW(),*/
     `last_change`  timestamp NULL DEFAULT current_timestamp() 
     ON UPDATE current_timestamp(),
     
     PRIMARY KEY (id)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 DROP TABLE IF EXISTS `board`;
 CREATE TABLE board (
 	`tile` varchar(10),
 	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
     primary key(tile,last_change)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 /*
