@@ -67,7 +67,7 @@ CREATE TABLE players (
 DROP TABLE IF EXISTS `gameStatus`;
 Create table  gameStatus(
     `id` int NOT NULL AUTO_INCREMENT,
-    `session_id` int NOT NULL,
+   /* `session_id` int NOT NULL, */
     `status` enum(
         'initialized',
         'started',
@@ -90,44 +90,47 @@ Create table  gameStatus(
 
 
 
-
-
-
-
-
-
-
-
-
-
 DROP TABLE IF EXISTS `board`;
 CREATE TABLE board (
 	`tile` varchar(10),
 	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
     primary key(tile,last_change)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
+/*Some procedure to help us later*/
 /*
 We create a procedure to share piles to each player
 */
 
-DROP PROCEDURE IF EXISTS `sharepiles`;
+DROP PROCEDURE IF EXISTS `sharetiles`;
 DELIMITER //
-CREATE PROCEDURE `sharepiles`()
+CREATE PROCEDURE `sharetiles`()
 BEGIN
-	declare  pile int;
+	declare  tiles int;
     declare player int;
     declare share int;
 	
 	    SELECT COUNT(*) INTO player FROM players;
-        SELECT COUNT(*) INTO pile FROM piles;
-        SET share = pile / player;
-        UPDATE piles
-        SET piles = share;
+        SELECT COUNT(*) INTO tiles FROM tile;
+        SET share = tiles / player;
+        UPDATE tile
+        SET tiles = share;
 	
     END//
 DELIMITER ;
+
+
+
+/*DROP PROCEDURE IF EXISTS `play_tile`;
+DELIMITER//
+CREATE PROCEDURE `play_tile` ()
+BEGIN
+	 declare tile_name varchar;
+    UPDATE gameStatus
+    SET current_tile = tile_name;
+END//
+DELIMITER;*/
 
 
 
