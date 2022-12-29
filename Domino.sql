@@ -75,9 +75,8 @@ Create table  gameStatus(
         'aborted'
     ) NOT NULL DEFAULT 'initialized',
     `p_turn` int NOT NULL DEFAULT 1,
-    `n_players` int NOT NULL,
-    `winner` enum('0', '1', '2', '3', '4') DEFAULT NULL,
-    `loser` enum('0', '1', '2', '3', '4') DEFAULT NULL,
+   /* `n_players` int NOT NULL, */
+    `result` enum('1', '2') DEFAULT NULL,
     /*`first_round` BOOLEAN NOT NULL DEFAULT TRUE,*/
     /*`last_change` timestamp DEFAULT NOW(),*/
     `last_change`  timestamp NULL DEFAULT current_timestamp() 
@@ -91,6 +90,14 @@ Create table  gameStatus(
 
 
 DROP TABLE IF EXISTS `board`;
+CREATE TABLE board (
+	`tile` varchar(10),
+	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
+    primary key(tile,last_change)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+
+DROP TABLE IF EXISTS `board_empty`;
 CREATE TABLE board (
 	`tile` varchar(10),
 	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
@@ -120,6 +127,17 @@ BEGIN
     END//
 DELIMITER ;
 
+/*We create one procedure that we can manage to resart a game to clean the board*/
+DROP procedure IF EXISTS `clean_board`;
+DELIMITER//
+CREATE PROCEDURE `clean_board` ()
+BEGIN
+replace into board select * from board_empty;
+	update `players` set username=null, token=null;
+  /*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
+  update `game_status` set `status`='not active', `p_turn`=null, `result`=null, `selected_piece`=null;
+END//
+DELIMITER ;
 
 
 /*DROP PROCEDURE IF EXISTS `play_tile`;

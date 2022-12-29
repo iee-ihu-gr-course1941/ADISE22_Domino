@@ -1,6 +1,18 @@
 <?php
 
 
+/*its not completed for sure*/
+
+function read_status()
+{
+	global $mysqli;
+	$sql = 'select * from gameStatus';
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+	$status = $res->fetch_assoc();
+	return ($status);
+}
 
 function show_tiles($x,$y) {
 	global $mysqli;
