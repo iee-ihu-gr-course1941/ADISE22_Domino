@@ -3,6 +3,9 @@ var game_status={};
 var board={};
 var last_update=new Date().getTime();
 var timer=null;
+$(function () {
+	$('#chess_login').click( login_to_game);
+	});
 
 
 function login_to_game() {
