@@ -21,8 +21,6 @@ function show_user($b) {
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
-
-
 function set_user($b,$input) {
 	//print_r($input);
 	if(!isset($input['name']) || $input['name']=='') {

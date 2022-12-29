@@ -52,14 +52,14 @@ Insert into tile(tilename,firstvalue,secondvalue)values
 CREATE TABLE players (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
-    `handtiles` varchar(10) NOT NULL,
+    /*`handtiles` varchar(10) ,*/
     `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     PRIMARY KEY (id),
     FOREIGN KEY (handtiles) References tile (tilename)
 );
 
 Create table  gameStatus(
-`id` int NOT NULL AUTO_INCREMENT,
+    `id` int NOT NULL AUTO_INCREMENT,
     `session_id` int NOT NULL,
     `status` enum(
         'initialized',
@@ -82,8 +82,14 @@ Create table  gameStatus(
 
 CREATE TABLE board (
 	`tile` varchar(10),
-	`last_change`  timestamp NULL DEFAULT current_timestamp() 
+	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
+    primary key(tile,last_change)
 );
+
+
+/*
+We create a procedure to share piles to each player
+*/
 
 DROP PROCEDURE IF EXISTS `sharepiles`;
 DELIMITER //
