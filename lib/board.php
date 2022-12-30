@@ -14,6 +14,19 @@ function read_status()
 	return ($status);
 }
 
+function reset_board(){
+	global $mysqli;
+
+	$sql = 'call clean_board()';
+	$mysqli->query($sql);
+	show_board();
+}
+
+function show_board(){
+	$res = read_board();
+	print json_encode($res, JSON_PRETTY_PRINT);
+}
+
 function show_tiles($x,$y) {
 	global $mysqli;
 	
