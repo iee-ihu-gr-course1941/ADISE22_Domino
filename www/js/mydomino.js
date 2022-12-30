@@ -1,8 +1,11 @@
-var me={token:null,piece_color:null};
+var me={token:null,p_turn:null};
 var game_status={};
 var board={};
 var last_update=new Date().getTime();
 var timer=null;
+
+
+
 $(function () {
 	$('#gamelogin').click( login_to_game);
 	});
@@ -28,9 +31,8 @@ function login_to_game() {
 }
 
 function login_result(data) {
-	me = data[0];
-	$('#game_initializer').hide();
-	update_info();
+	me = data;
+	window.HTMLTableCaptionElement.
 	game_status_update();
 }
 
