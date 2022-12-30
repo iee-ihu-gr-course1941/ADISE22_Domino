@@ -9,6 +9,19 @@ h1 {
   color: #edece4;
   font-family: 'georgia';
 }
+h2 {
+  text-align: center;
+  color: #edece4;
+  font-family: 'Arial Narrow';
+  font-size: 190%;
+}
+h3{
+  text-align: center;
+  color: #edece4;
+  font-family: 'Arial Narrow';
+  font-size: 120%;
+}
+
 
 form {
   max-width: 400px;
