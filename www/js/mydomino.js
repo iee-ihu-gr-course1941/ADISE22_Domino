@@ -1,4 +1,4 @@
-var me={token:null,p_turn:null};
+var me={token:null,id:null,username:null,lastactino:null};
 var game_status={};
 var board={};
 var last_update=new Date().getTime();
@@ -6,13 +6,13 @@ var timer=null;
 
 
 
-$(function () {
-	$('#gamelogin').click( login_to_game);
-	});
+$(function(){
+	$('#gamelogin').click(login_to_game);
+});
 
 
 function login_to_game() {
-	if($('#username').val()=='') {
+	if($('#name').val()=='') {
 		alert('You have to set a username');
 		return;
 	}
@@ -25,9 +25,9 @@ function login_to_game() {
 			dataType: "json",
 			headers: {"X-Token": me.token},
 			contentType: 'application/json',
-			data: JSON.stringify( {username: $('#username').val()}),
+			data: JSON.stringify( {username: $('#name').val()}),
 			success: login_result,
-			error: login_error});
+			error: login_error}); 
 }
 
 function login_result(data) {
