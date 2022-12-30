@@ -22,7 +22,6 @@ h3{
   font-size: 120%;
 }
 
-
 form {
   max-width: 400px;
   margin: 0 auto;
@@ -59,6 +58,13 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
   background-color: #45a049;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
 }
 
 
