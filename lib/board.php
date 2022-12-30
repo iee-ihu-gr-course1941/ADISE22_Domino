@@ -42,4 +42,4 @@ function show_tiles($x,$y) {
 
 
 
-<?>
+?>
