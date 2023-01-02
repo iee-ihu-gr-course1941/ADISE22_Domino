@@ -30,6 +30,15 @@ function login_to_game() {
 			error: login_error}); 
 }
 
+function showmytiles(){
+
+}
+
+
+function showOpponentTiles(){
+
+}
+
 function login_result(data) {
 	me = data;
 	window.HTMLTableCaptionElement.
