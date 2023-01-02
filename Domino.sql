@@ -54,11 +54,11 @@ DROP TABLE IF EXISTS `players`;
 CREATE TABLE players (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
-    /*`handtiles` varchar(10) ,*/
+    `handtiles` varchar(10) ,
     `token` varchar(100) DEFAULT NULL,
     `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-    PRIMARY KEY (id)
-   /* FOREIGN KEY (handtiles) References tile (tilename)*/
+    PRIMARY KEY (id),
+    FOREIGN KEY (handtiles) References tile (tilename)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
