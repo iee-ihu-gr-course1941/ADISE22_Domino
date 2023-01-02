@@ -54,13 +54,23 @@ DROP TABLE IF EXISTS `players`;
 CREATE TABLE players (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
-    `handtiles` varchar(10) ,
+   `handtiles` varchar(10) DEFAULT NULL UNIQUE,
     `token` varchar(100) DEFAULT NULL,
-    `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-    PRIMARY KEY (id),
-    FOREIGN KEY (handtiles) References tile (tilename)
+   `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), 
+    PRIMARY KEY (id), 
+   CONSTRAINT FOREIGN KEY (handtiles) References tile (tilename)
+  /* PRIMARY KEY (handtiles) */
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
+/*
+INSERT INTO players(name)VALUES
+	('vasilis');
+	
+	SELECT count(DISTINCT  name)
+	FROM players ;
+	
+	SELECT * FROM players ;
+*/
 
 
 
@@ -150,6 +160,10 @@ BEGIN
 END//
 DELIMITER;*/
 
+/*
+SELECT * FROM players;
+
+/*
 
 
 
