@@ -32,13 +32,9 @@ function set_user($b,$input) {
 		print json_encode(['errormesg'=>"No name given."]);
 		exit;
 	}
+	check_abort(); //from game.php
 
-
-	check_abort();
-
-
-	
-	$status = read_status();
+	$status = read_status(); //from board.php
 	if($status['status']=='started') {
 		header("HTTP/1.1 400 Bad Request");
 		print json_encode(['errormesg'=>"Game is in action."]);
@@ -52,7 +48,7 @@ function set_user($b,$input) {
 
 	
 	$name=$input['name'];
-	$sql = 'select count(*) as c from players where name=? ';
+	$sql = 'select count(*) as c from players where name=?';
 	$st = $mysqli->prepare($sql);
 	$st->bind_param('s',$name);
 	$st->execute();
@@ -87,8 +83,7 @@ function set_user($b,$input) {
 	    $st2->execute();
     }
 	
-
-	update_game_status();
+	update_game_status(); // from game.php
 	$sql = 'select * from players where id=?';
 	$st = $mysqli->prepare($sql);
 	$st->bind_param('i',$id);

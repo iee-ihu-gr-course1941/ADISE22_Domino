@@ -21,15 +21,23 @@ if(isset($_SERVER['HTTP_X_TOKEN'])) {
     $input['token']='';
 }
 
+
+
+
+
 switch($r=array_shift($request)){
     case'players': handle_player($method,$request,$input);
         break;
     default : header("HTTP/1.1 404 NOT Found");
         exit;
-    case 'players': handle_player($method, $request,$input);
-        break;
-    default:  header("HTTP/1.1 404 Not Found");
-        exit;   
+
+    case'status':handle_status($method,);
+        break
+    default : header("HTTP/1.1 404 NOT Found");
+        exit;
+
+    
+     
 
 }
 
