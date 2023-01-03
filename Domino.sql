@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `players`;
 CREATE TABLE players (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(10) NOT NULL,
-   `handtiles` varchar(10) DEFAULT NULL UNIQUE,
+  /* `handtiles` varchar(10) DEFAULT NULL UNIQUE, */
     `token` varchar(100) DEFAULT NULL,
    `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), 
     PRIMARY KEY (id) 
@@ -31,14 +31,17 @@ primary key(tilename)
 DROP TABLE IF EXISTS `sharetile`;
 CREATE TABLE sharetile(
 `id` INT NOT NULL,
-`tile_name` varchar (15) DEFAULT NULL,
-`player_name` varchar(10) DEFAULT NULL,
+`tile_name` varchar (15) ,
+`player_name` varchar(10) ,
 PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
-INSERT INTO sharetile(id) VALUES
-(0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28);
+/*INSERT INTO sharetile(id) VALUES
+(0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28);*/
+  
+
+
 
 
 
@@ -75,7 +78,7 @@ INSERT INTO tile(tilename,firstvalue,secondvalue) VALUES
 
 /*
 INSERT INTO players(name)VALUES
-	('vasilis4');
+	('vasilis');
 	
 	SELECT count(DISTINCT  name)
 	FROM players ;
@@ -97,7 +100,7 @@ Create table  gameStatus(
         'ended',
         'aborted'
     ) NOT NULL DEFAULT 'initialized',
-    `p_turn` int NOT NULL DEFAULT 1,
+    `p_turn` Default NULL,
    /* `n_players` int NOT NULL, */
     `result` enum('1', '2') DEFAULT NULL,
     /*`first_round` BOOLEAN NOT NULL DEFAULT TRUE,*/
@@ -121,9 +124,9 @@ CREATE TABLE board (
 
 
 DROP TABLE IF EXISTS `board_empty`;
-CREATE TABLE board (
-	`tile` varchar(10),
-	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
+CREATE TABLE board_empty (
+	`etile` varchar(10),
+	`elast_change`  timestamp NULL DEFAULT current_timestamp(), 
     primary key(tile,last_change)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
@@ -138,31 +141,73 @@ BEGIN
 replace into board select * from board_empty;
 	 set tile=null, last_change=null;
   /*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
-  update `game_status` set `status`='not active', `p_turn`=null, `result`=null, `selected_piece`=null;
+  update `game_status` set `status`='not active', `p_turn`=null, `result`=null,  `last_change` =null;
 END//
 DELIMITER ;
 
 
+DROP procedure IF EXISTS `tile_shuffle`;
+DELIMITER //
+CREATE PROCEDURE tile_shuffle()
+BEGIN
+	DROP TABLE IF EXISTS `clonetile`;
+		CREATE TABLE clonetile AS
+		SELECT * FROM tile			
+		ORDER BY RAND();				
+	END//
+
+DELIMITER ;
+
+SELECT * FROM tile;
+
+CALL tile_shuffle();
+# SELECT COUNT(*) FROM clonetile;
+# select * from clonetile;
 
 DROP procedure IF EXISTS `update_sharetile`;
 DELIMITER //
 CREATE PROCEDURE `update_sharetile` ()
 BEGIN
+ DECLARE counter INT;
+  SET counter=0;
+  while (counter<28) DO
   
- 	ALTER TABLE sharetile 
- 	ADD UNIQUE(tile_name);
-  UPDATE sharetile
-  SET tile_name = (SELECT tilename FROM tile Where tilename <> (SELECT tile_name FROM sharetile) ORDER BY RAND() LIMIT 1)
-  WHERE tile_name IS NULL;
+  INSERT INTO sharetile(id) VALUES
+  		(counter);
   
-   UPDATE sharetile
-  SET player_name = (SELECT name FROM players ORDER BY RAND() LIMIT 1)
-  WHERE player_name IS NULL;
+  	UPDATE sharetile
+  	SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1)
+  	WHERE tile_name IS NULL;
+  	DELETE FROM clonetile  WHERE tilename  IN (SELECT c.tilename FROM clonetile c INNER JOIN sharetile s WHERE c.tilename=s.tile_name);
+  
+
+  	UPDATE sharetile t
+	SET t.player_name = (
+  	SELECT p.name
+  	FROM (
+    	SELECT name, ROW_NUMBER() OVER (ORDER BY name) as row_num
+    	FROM players
+  	) p
+  WHERE p.row_num % (SELECT COUNT(*) FROM players) = t.id % (SELECT COUNT(*) FROM players)
+);
+  
+SET counter = counter + 1;
+  
+  END WHILE;
+    /*
+	UPDATE sharetile
+  	SET player_name = (SELECT name FROM players ORDER BY RAND() LIMIT 1) DIV 
+  	WHERE player_name IS NULL;*/
+  	
  
 END //
 DELIMITER ;
 
+
 CALL update_sharetile();
+
+
+SELECT COUNT(*) FROM sharetile WHERE player_name='vasilis';
 
 /*DROP PROCEDURE IF EXISTS `play_tile`;
 DELIMITER//
@@ -175,7 +220,8 @@ END//
 DELIMITER;*/
 
 /*
-SELECT * FROM sharetile;
+SELECT * FROM sharetile; 
+select  count(DISTINCT tile_name) from sharetile;
 
 /*
 
