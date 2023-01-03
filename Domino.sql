@@ -1,8 +1,21 @@
 
 
-DROP TABLE IF EXISTS `lousi`;
+DROP DATABASE IF EXISTS `lousi`;
 CREATE DATABASE lousi;
+USE lousi;
 
+
+DROP TABLE IF EXISTS `players`;
+CREATE TABLE players (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(10) NOT NULL,
+   `handtiles` varchar(10) DEFAULT NULL UNIQUE,
+    `token` varchar(100) DEFAULT NULL,
+   `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), 
+    PRIMARY KEY (id) 
+  /* CONSTRAINT FOREIGN KEY (handtiles) References tile (tilename) */
+  /* PRIMARY KEY (handtiles) */
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
 DROP TABLE IF EXISTS `tile`;
@@ -11,11 +24,21 @@ CREATE TABLE tile(
 `firstvalue` int NOT NULL,
 `secondvalue` int NOT NULL,
 primary key(tilename)
+/*FOREIGN KEY (playername) References players (name) */
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
-   
+
+DROP TABLE IF EXISTS `sharetile`;
+CREATE TABLE sharetile(
+`id` INT NOT NULL,
+`tile_name` varchar (15) DEFAULT NULL,
+`player_name` varchar(10) DEFAULT NULL,
+PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
+INSERT INTO sharetile(id) VALUES
+(0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28);
 
 
 
@@ -50,26 +73,16 @@ INSERT INTO tile(tilename,firstvalue,secondvalue) VALUES
 ('6-6',6,6);
 
 
-DROP TABLE IF EXISTS `players`;
-CREATE TABLE players (
-    `id` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) NOT NULL,
-   `handtiles` varchar(10) DEFAULT NULL UNIQUE,
-    `token` varchar(100) DEFAULT NULL,
-   `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(), 
-    PRIMARY KEY (id), 
-   CONSTRAINT FOREIGN KEY (handtiles) References tile (tilename)
-  /* PRIMARY KEY (handtiles) */
-)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
-
 /*
 INSERT INTO players(name)VALUES
-	('vasilis');
+	('vasilis4');
 	
 	SELECT count(DISTINCT  name)
 	FROM players ;
 	
 	SELECT * FROM players ;
+	
+	Select count(*) from tile;
 */
 
 
@@ -116,26 +129,6 @@ CREATE TABLE board (
 
 
 /*Some procedure to help us later*/
-/*
-We create a procedure to share piles to each player
-*/
-
-DROP PROCEDURE IF EXISTS `sharetiles`;
-DELIMITER //
-CREATE PROCEDURE `sharetiles`()
-BEGIN
-	declare  tiles int;
-    declare player int;
-    declare share int;
-	
-	    SELECT COUNT(*) INTO player FROM players;
-        SELECT COUNT(*) INTO tiles FROM tile;
-        SET share = tiles / player;
-        UPDATE tile
-        SET tiles = share;
-	
-    END//
-DELIMITER ;
 
 /*We create one procedure that we can manage to resart a game to clean the board*/
 DROP procedure IF EXISTS `clean_board`;
@@ -143,12 +136,33 @@ DELIMITER//
 CREATE PROCEDURE `clean_board` ()
 BEGIN
 replace into board select * from board_empty;
-	update `players` set username=null, token=null;
+	 set tile=null, last_change=null;
   /*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
   update `game_status` set `status`='not active', `p_turn`=null, `result`=null, `selected_piece`=null;
 END//
 DELIMITER ;
 
+
+
+DROP procedure IF EXISTS `update_sharetile`;
+DELIMITER //
+CREATE PROCEDURE `update_sharetile` ()
+BEGIN
+  
+ 	ALTER TABLE sharetile 
+ 	ADD UNIQUE(tile_name);
+  UPDATE sharetile
+  SET tile_name = (SELECT tilename FROM tile Where tilename <> (SELECT tile_name FROM sharetile) ORDER BY RAND() LIMIT 1)
+  WHERE tile_name IS NULL;
+  
+   UPDATE sharetile
+  SET player_name = (SELECT name FROM players ORDER BY RAND() LIMIT 1)
+  WHERE player_name IS NULL;
+ 
+END //
+DELIMITER ;
+
+CALL update_sharetile();
 
 /*DROP PROCEDURE IF EXISTS `play_tile`;
 DELIMITER//
@@ -161,7 +175,7 @@ END//
 DELIMITER;*/
 
 /*
-SELECT * FROM players;
+SELECT * FROM sharetile;
 
 /*
 
