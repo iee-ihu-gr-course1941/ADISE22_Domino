@@ -262,7 +262,7 @@ BEGIN
   		 
 END //
 DELIMITER ;
-
+#last udate
 CALL cleanboard();
 
 CALL play_tile('1','6-3');
