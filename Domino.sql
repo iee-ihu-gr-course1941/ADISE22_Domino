@@ -100,7 +100,7 @@ Create table  gameStatus(
         'ended',
         'aborted'
     ) NOT NULL DEFAULT 'initialized',
-    `p_turn` int Default NULL,
+    `p_turn` ENUM('1','2') Default NULL,
    /* `n_players` int NOT NULL, */
     `result` enum('1', '2') DEFAULT NULL,
     /*`first_round` BOOLEAN NOT NULL DEFAULT TRUE,*/
@@ -121,21 +121,22 @@ SELECT * FROM gamestatus;
 
 DROP TABLE IF EXISTS `board`;
 CREATE TABLE board (
+	`bid`  ENUM  ('1','2'),
 	`btile` varchar(10),
 	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
-    primary key(btile,last_change)
+    primary key(bid)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
-INSERT INTO board(btile) VALUES 
-('0-0');
+INSERT INTO board(bid) VALUES ('1'),('2');
 SELECT * FROM board
 
 DROP TABLE IF EXISTS `board_empty`;
 CREATE TABLE board_empty (
-	`etile` varchar(10),
-	`elast_change`  timestamp NULL DEFAULT current_timestamp(), 
-    primary key(tile,last_change)
+	`bid` ENUM ('1','2'),
+	`btile` varchar(10),
+	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
+    primary key(bid)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
@@ -241,7 +242,44 @@ DELIMITER;*/
 SELECT * FROM sharetile; 
 select  count(DISTINCT tile_name) from sharetile;
 
-/*
+*/
+
+
+DROP procedure IF EXISTS `play_tile`;
+DELIMITER //
+CREATE PROCEDURE `play_tile` (IN p_id ENUM ('1','2'), IN tile_name VARCHAR(15))
+BEGIN
+  	UPDATE board
+  	SET
+	  btile=tile_name,
+	  last_change = NOW()
+  	where bid=p_id;
+  	
+  	UPDATE gamestatus
+  	SET  p_turn=p_id,
+  		status='started'
+  	WHERE id=1;
+  		 
+END //
+DELIMITER ;
+
+CALL cleanboard();
+
+CALL play_tile('1','6-3');
+
+
+SELECT * FROM board;
+
+SELECT * FROM tile;
+SELECT * FROM sharetile;
+
+SELECT * from gamestatus;
+
+
+
+
+
+
 
 
 
