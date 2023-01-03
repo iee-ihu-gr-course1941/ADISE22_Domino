@@ -78,7 +78,7 @@ INSERT INTO tile(tilename,firstvalue,secondvalue) VALUES
 
 /*
 INSERT INTO players(name)VALUES
-	('vasilis');
+	('vasilis1');
 	
 	SELECT count(DISTINCT  name)
 	FROM players ;
@@ -100,7 +100,7 @@ Create table  gameStatus(
         'ended',
         'aborted'
     ) NOT NULL DEFAULT 'initialized',
-    `p_turn` Default NULL,
+    `p_turn` int Default NULL,
    /* `n_players` int NOT NULL, */
     `result` enum('1', '2') DEFAULT NULL,
     /*`first_round` BOOLEAN NOT NULL DEFAULT TRUE,*/
@@ -111,17 +111,25 @@ Create table  gameStatus(
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
+INSERT INTO gamestatus(p_turn) VALUES 
+(1);
+
+SELECT * FROM gamestatus;
 
 
 
 
 DROP TABLE IF EXISTS `board`;
 CREATE TABLE board (
-	`tile` varchar(10),
+	`btile` varchar(10),
 	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
-    primary key(tile,last_change)
+    primary key(btile,last_change)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
+
+INSERT INTO board(btile) VALUES 
+('0-0');
+SELECT * FROM board
 
 DROP TABLE IF EXISTS `board_empty`;
 CREATE TABLE board_empty (
@@ -134,16 +142,22 @@ CREATE TABLE board_empty (
 /*Some procedure to help us later*/
 
 /*We create one procedure that we can manage to resart a game to clean the board*/
-DROP procedure IF EXISTS `clean_board`;
-DELIMITER//
-CREATE PROCEDURE `clean_board` ()
+DROP procedure IF EXISTS `cleanboard`;
+DELIMITER //
+CREATE PROCEDURE cleanboard()
 BEGIN
-replace into board select * from board_empty;
-	 set tile=null, last_change=null;
-  /*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
-  update `game_status` set `status`='not active', `p_turn`=null, `result`=null,  `last_change` =null;
+	DROP TABLE IF EXISTS `board`;
+	CREATE TABLE board SELECT * FROM board_empty;
+	 		/*set tile=null, last_change=null;*/
+  			/*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
+  		update `gamestatus` set `status`='not active', `p_turn`=null, `result`=null,  `last_change` =null;
 END//
 DELIMITER ;
+
+CALL cleanboard();
+
+SELECT * FROM gamestatus;
+SELECT * FROM board;
 
 
 DROP procedure IF EXISTS `tile_shuffle`;
@@ -170,6 +184,9 @@ CREATE PROCEDURE `update_sharetile` ()
 BEGIN
  DECLARE counter INT;
   SET counter=0;
+  
+  CALL tile_shuffle();
+  
   while (counter<28) DO
   
   INSERT INTO sharetile(id) VALUES
@@ -190,7 +207,7 @@ BEGIN
   	) p
   WHERE p.row_num % (SELECT COUNT(*) FROM players) = t.id % (SELECT COUNT(*) FROM players)
 );
-  
+  SELECT * FROM sharetile WHERE player_name='vasilis';
 SET counter = counter + 1;
   
   END WHILE;
@@ -206,6 +223,7 @@ DELIMITER ;
 
 CALL update_sharetile();
 
+SELECT * FROM sharetile;
 
 SELECT COUNT(*) FROM sharetile WHERE player_name='vasilis';
 
