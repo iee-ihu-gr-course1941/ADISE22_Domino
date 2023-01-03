@@ -26,6 +26,10 @@ switch($r=array_shift($request)){
         break;
     default : header("HTTP/1.1 404 NOT Found");
         exit;
+    case 'players': handle_player($method, $request,$input);
+        break;
+    default:  header("HTTP/1.1 404 Not Found");
+        exit;   
 
 }
 

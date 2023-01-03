@@ -57,6 +57,22 @@ function game_status_update() {
 	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": me.token} });
 }
 
+function update_username1(data){
+	$('#player1').text(data[0].name);
+}
+
+function opponentUsername(){
+	if(me[0].id===1){
+		$.ajax({url: "domino.php/players/2", success: update_username2});
+	}else if(me[0].id===2){
+		$.ajax({url: "domino.php/players/1", success: update_username1});
+	}
+}
+
+function update_username2(data){
+	$('#player2').text(data[0].name);
+}
+
 
 
 

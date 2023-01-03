@@ -1,5 +1,5 @@
 <?php 
-	require_once "..lib/users.php"
+	require_once "..lib/players.php"
 
 
 
