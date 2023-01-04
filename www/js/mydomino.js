@@ -11,6 +11,20 @@ $(function(){
 });
 
 
+ drawBoard('board1');
+ drawBoard('board2');
+
+
+function drawBoard(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+
+    // Draw the board
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(50, 50, 300, 300);
+  }
+
+
 function login_to_game() {
 	if($('#name').val()=='') {
 		alert('You have to set a username');
@@ -76,9 +90,6 @@ function update_username2(data){
 }
 
 
-function playtile(){
-	//if
-}
 
 
 
