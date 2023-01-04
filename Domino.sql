@@ -77,6 +77,16 @@ CREATE TABLE IF NOT EXISTS `players` (
 
 -- Dumping data for table lousi.players: ~0 rows (approximately)
 
+
+/*
+
+INSERT INTO players(name) values ('vasilis');
+
+select * from players;
+*/
+
+
+
 -- Dumping structure for procedure lousi.play_tile
 DELIMITER //
 CREATE PROCEDURE `play_tile`(IN p_id ENUM ('1','2'), IN tile_name VARCHAR(15))
@@ -193,6 +203,9 @@ BEGIN
  
 END//
 DELIMITER ;
+
+
+
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -1,6 +1,4 @@
 <?php
-
-<?php
 $host='localhost';
 $db = 'lousi';
 require_once "db_upass.php";
