@@ -1,9 +1,9 @@
 <?php 
-	require_once "..lib/players.php"
+	require_once "../lib/players.php";
 
 
 
-function show_status() {
+function show_status(){
 	
 	global $mysqli;
 	
@@ -77,9 +77,8 @@ function update_gameStatus() {
 	$st->execute();
 }
 
-
-function read_status()
-{
+/*
+function read_status(){
 	global $mysqli;
 	$sql = 'select * from gameStatus';
 	$st = $mysqli->prepare($sql);
@@ -87,7 +86,7 @@ function read_status()
 	$res = $st->get_result();
 	$status = $res->fetch_assoc();
 	return ($status);
-}
+}*/
 
     function setResult($id){
         global $mysqli;

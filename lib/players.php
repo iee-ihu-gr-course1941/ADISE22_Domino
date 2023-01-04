@@ -1,10 +1,12 @@
 <?php 
 require_once "../lib/game.php";
 require_once "../lib/board.php";
+require_once "../lib/dbconnection.php";
+
 
 function show_users() {
 	global $mysqli;
-	$sql = 'select name,id from players';
+	$sql = 'select * from players';
 	$st = $mysqli->prepare($sql);
 	$st->execute();
 	$res = $st->get_result();
@@ -14,7 +16,7 @@ function show_users() {
 
 function show_user($b) {
 	global $mysqli;
-	$sql = 'select name,id from players where id=?';
+	$sql = 'select name from players where id=?';
 	$st = $mysqli->prepare($sql);
 	$st->bind_param('s',$b);
 	$st->execute();

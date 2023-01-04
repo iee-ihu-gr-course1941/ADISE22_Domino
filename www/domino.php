@@ -4,12 +4,9 @@ require_once "../lib/board.php";
 require_once "../lib/game.php";
 require_once "../lib/players.php";
 
-
+$request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $method = $_SERVER['REQUEST_METHOD'];
-$request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
-$request_path = trim($_SERVER['PATH_INFO'],'/');
-$input = json_decode(file_get_contents('php://input'),true);
-
+$input = json_decode(file_get_contents('php://input'), true);
 
 
 if($input==null) {
@@ -28,12 +25,9 @@ if(isset($_SERVER['HTTP_X_TOKEN'])) {
 switch($r=array_shift($request)){
     case'players': handle_player($method,$request,$input);
         break;
-    default : header("HTTP/1.1 404 NOT Found");
-        exit;
-
     case'status':handle_status($method,);
-        break
-    default : header("HTTP/1.1 404 NOT Found");
+        break;
+    default :header("HTTP/1.1 404 NOT Found");
         exit;
 
     
