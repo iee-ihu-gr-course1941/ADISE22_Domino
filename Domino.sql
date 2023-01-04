@@ -54,6 +54,9 @@ BEGIN
 END//
 DELIMITER ;
 
+#SELECT * FROM board;
+
+
 -- Dumping structure for πίνακας lousi.gamestatus
 CREATE TABLE IF NOT EXISTS `gamestatus` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -104,6 +107,10 @@ BEGIN
   		 
 END//
 DELIMITER ;
+
+/*#call play_tile('1',(1-0)); 
+	select * from board;
+*/
 
 -- Dumping structure for πίνακας lousi.sharetile
 CREATE TABLE IF NOT EXISTS `sharetile` (

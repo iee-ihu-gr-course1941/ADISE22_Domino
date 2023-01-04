@@ -25,7 +25,9 @@ if(isset($_SERVER['HTTP_X_TOKEN'])) {
 switch($r=array_shift($request)){
     case'players': handle_player($method,$request,$input);
         break;
-    case'status':handle_status($method,);
+    case'status':show_status($method,$request,$input);
+        break;
+    case'board':show_board($method,$request,$input);
         break;
     default :header("HTTP/1.1 404 NOT Found");
         exit;
