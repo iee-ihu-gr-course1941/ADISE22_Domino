@@ -2,7 +2,7 @@
 
 
 /*its not completed for sure*/
-
+/*
 function read_status()
 {
 	global $mysqli;
@@ -13,7 +13,7 @@ function read_status()
 	$status = $res->fetch_assoc();
 	return ($status);
 }
-
+*/
 function reset_board(){
 	global $mysqli;
 

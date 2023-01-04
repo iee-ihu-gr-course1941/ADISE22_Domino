@@ -30,18 +30,14 @@ function login_to_game() {
 		alert('You have to set a username');
 		return;
 	}
-//	var p_color = $('#pcolor').val();
-//	draw_empty_board(p_color);
-//	sharetiles();
 	
-	$.ajax({url: "domino.php/players/", 
+	$.ajax({url: "api.php/players", 
 			method: 'PUT',
 			dataType: "json",
-			headers: {"X-Token": me.token},
 			contentType: 'application/json',
-			data: JSON.stringify( {username: $('#name').val()}),
+			data: JSON.stringify( {name: $('#name').val()}),
 			success: login_result,
-			error: login_error}); 
+			error: login_error});
 }
 
 function filltiles(){
@@ -65,7 +61,6 @@ function login_error(data,y,z,c) {
 	var x = data.responseJSON;
 	alert(x.errormesg);
 }
-
 
 function game_status_update() {
 	

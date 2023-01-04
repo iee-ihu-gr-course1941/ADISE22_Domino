@@ -23,7 +23,7 @@ function show_status(){
 function check_abort() {
 	global $mysqli;
 	
-	$sql = "update gameStatus set status='aborded',result=if(p_turn='1','2','1'), p_turn=null where p_turn is not null and last_change<(now()-INTERVAL 10 MINUTE) and status='started'";
+	$sql = "update gamestatus set status='aborded',result=if(p_turn='1','2','1'), p_turn=null where p_turn is not null and last_change<(now()-INTERVAL 10 MINUTE) and status='started'";
 	$st = $mysqli->prepare($sql);
 	$st->execute();
 	
@@ -77,16 +77,16 @@ function update_gameStatus() {
 	$st->execute();
 }
 
-/*
+
 function read_status(){
 	global $mysqli;
-	$sql = 'select * from gameStatus';
+	$sql = 'select * from gamestatus';
 	$st = $mysqli->prepare($sql);
 	$st->execute();
 	$res = $st->get_result();
 	$status = $res->fetch_assoc();
 	return ($status);
-}*/
+}
 
     function setResult($id){
         global $mysqli;
