@@ -14,6 +14,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
+-- Dumping database structure for lousi
+CREATE DATABASE IF NOT EXISTS `lousi` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `lousi`;
+
 -- Dumping structure for πίνακας lousi.board
 CREATE TABLE IF NOT EXISTS `board` (
   `bid` enum('1','2') NOT NULL,
