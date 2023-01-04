@@ -1,25 +1,23 @@
 <?php
 
-	//session_start();
-	
-	$host = 'localhost';
-	$user = 'root';
-	$pass = '';
-        //$user = 'user';
-	$database = 'lousi';
-	$port = '3306';
-	
-	$dbcon = new mysqli($host,$user,$pass,$database,$port);
-	$connected = false;
-	if ($dbcon !== false) {
-		//echo "DB connected.";
-		$connected = true;
-	}
-	elseif (!empty($dbcon->error)) {
-		echo $dbcon->errno.' '.$dbcon->error;
-	}
-	else {
-		echo "Database obj is empty.";
-		exit;
-	}
+<?php
+$host='localhost';
+$db = 'lousi';
+require_once "db_upass.php";
+
+$user=$DB_USER;
+$pass=$DB_PASS;
+
+
+if(gethostname()=='users.iee.ihu.gr') {
+	$mysqli = new mysqli($host, $user, $pass, $db,null,'/home/student/it/2014/it144347/mysql/run/mysql.sock');
+} else {
+		$pass=null;
+        $mysqli = new mysqli($host, $user, $pass, $db);
+}
+
+if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: (" . 
+    $mysqli->connect_errno . ") " . $mysqli->connect_error;
+}?>
 	?>
