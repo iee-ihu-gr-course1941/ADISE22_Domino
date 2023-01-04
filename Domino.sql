@@ -1,9 +1,6 @@
-
-
 DROP DATABASE IF EXISTS `lousi`;
 CREATE DATABASE lousi;
 USE lousi;
-
 
 DROP TABLE IF EXISTS `players`;
 CREATE TABLE players (
@@ -16,6 +13,20 @@ CREATE TABLE players (
   /* CONSTRAINT FOREIGN KEY (handtiles) References tile (tilename) */
   /* PRIMARY KEY (handtiles) */
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+/*
+INSERT INTO players(name)VALUES
+	('vasilis1');
+	
+	SELECT count(DISTINCT  name)
+	FROM players ;
+	
+	SELECT * FROM players ;
+	
+	Select count(*) from tile;
+*/
+
+
 
 
 DROP TABLE IF EXISTS `tile`;
@@ -40,11 +51,6 @@ PRIMARY KEY (id)
 /*INSERT INTO sharetile(id) VALUES
 (0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28);*/
   
-
-
-
-
-
 INSERT INTO tile(tilename,firstvalue,secondvalue) VALUES 
 ('0-0',0,0),
 ('0-1',0,1),
@@ -75,21 +81,6 @@ INSERT INTO tile(tilename,firstvalue,secondvalue) VALUES
 ('5-6',5,6),
 ('6-6',6,6);
 
-
-/*
-INSERT INTO players(name)VALUES
-	('vasilis1');
-	
-	SELECT count(DISTINCT  name)
-	FROM players ;
-	
-	SELECT * FROM players ;
-	
-	Select count(*) from tile;
-*/
-
-
-
 DROP TABLE IF EXISTS `gameStatus`;
 Create table  gameStatus(
     `id` int NOT NULL AUTO_INCREMENT,
@@ -116,9 +107,6 @@ INSERT INTO gamestatus(p_turn) VALUES
 
 SELECT * FROM gamestatus;
 
-
-
-
 DROP TABLE IF EXISTS `board`;
 CREATE TABLE board (
 	`bid`  ENUM  ('1','2'),
@@ -126,7 +114,6 @@ CREATE TABLE board (
 	`last_change`  timestamp NULL DEFAULT current_timestamp(), 
     primary key(bid)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
-
 
 INSERT INTO board(bid) VALUES ('1'),('2');
 SELECT * FROM board
@@ -176,47 +163,47 @@ DELIMITER ;
 SELECT * FROM tile;
 
 CALL tile_shuffle();
+
+/*
 # SELECT COUNT(*) FROM clonetile;
 # select * from clonetile;
+*/
 
 DROP procedure IF EXISTS `update_sharetile`;
 DELIMITER //
 CREATE PROCEDURE `update_sharetile` ()
 BEGIN
- DECLARE counter INT;
-  SET counter=0;
+ 	DECLARE counter INT;
+  	SET counter=0;
+  	
+	CALL tile_shuffle();
   
-  CALL tile_shuffle();
+  	while (counter<28) DO
   
-  while (counter<28) DO
-  
-  INSERT INTO sharetile(id) VALUES
+  		INSERT INTO sharetile(id) VALUES
   		(counter);
   
-  	UPDATE sharetile
-  	SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1)
-  	WHERE tile_name IS NULL;
-  	DELETE FROM clonetile  WHERE tilename  IN (SELECT c.tilename FROM clonetile c INNER JOIN sharetile s WHERE c.tilename=s.tile_name);
+  		UPDATE sharetile
+  		SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1)
+  		WHERE tile_name IS NULL;
+  		DELETE FROM clonetile  WHERE tilename  IN (SELECT c.tilename FROM clonetile c INNER JOIN sharetile s WHERE c.tilename=s.tile_name);
   
 
-  	UPDATE sharetile t
-	SET t.player_name = (
-  	SELECT p.name
-  	FROM (
-    	SELECT name, ROW_NUMBER() OVER (ORDER BY name) as row_num
-    	FROM players
-  	) p
-  WHERE p.row_num % (SELECT COUNT(*) FROM players) = t.id % (SELECT COUNT(*) FROM players)
-);
-  SELECT * FROM sharetile WHERE player_name='vasilis';
-SET counter = counter + 1;
-  
-  END WHILE;
+  		UPDATE sharetile t
+		SET t.player_name = (
+  		SELECT p.name
+  			FROM (
+    				SELECT name, ROW_NUMBER() OVER (ORDER BY name) as row_num
+    					FROM players
+  				)p
+  			WHERE p.row_num % (SELECT COUNT(*) FROM players) = t.id % (SELECT COUNT(*) FROM players)
+		);
+		SET counter = counter + 1;
+  	END WHILE;
     /*
 	UPDATE sharetile
   	SET player_name = (SELECT name FROM players ORDER BY RAND() LIMIT 1) DIV 
   	WHERE player_name IS NULL;*/
-  	
  
 END //
 DELIMITER ;
