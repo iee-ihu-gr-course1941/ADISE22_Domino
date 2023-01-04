@@ -40,6 +40,21 @@ function show_tiles($x,$y) {
 }
 
 
+function fill_board($x,$y){
+	global $mysqli;
+
+	$sql='call play_tile('?','?')';
+	$st= $mysqli->prepare($sq1);
+	$st->bind_paradam($x,$y);
+	$st->execute();
+	$res = $st->get_result();
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+
+
+}
+
+
 
 
 ?>

@@ -30,8 +30,10 @@ function login_to_game() {
 			error: login_error}); 
 }
 
-function showmytiles(){
-
+function filltiles(){
+	$.ajax({url:"domino.php/tile",
+			headers:{"X-Token": me.token},
+			success: fill_tiles});
 }
 
 
@@ -71,6 +73,11 @@ function opponentUsername(){
 
 function update_username2(data){
 	$('#player2').text(data[0].name);
+}
+
+
+function playtile(){
+	//if
 }
 
 
