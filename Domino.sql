@@ -102,10 +102,10 @@ Create table  gameStatus(
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-INSERT INTO gamestatus(p_turn) VALUES 
-(1);
 
-SELECT * FROM gamestatus;
+/*
+
+SELECT * FROM gamestatus;*/
 
 DROP TABLE IF EXISTS `board`;
 CREATE TABLE board (
@@ -116,7 +116,7 @@ CREATE TABLE board (
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 INSERT INTO board(bid) VALUES ('1'),('2');
-SELECT * FROM board
+#SELECT * FROM board
 
 DROP TABLE IF EXISTS `board_empty`;
 CREATE TABLE board_empty (
@@ -134,19 +134,19 @@ DROP procedure IF EXISTS `cleanboard`;
 DELIMITER //
 CREATE PROCEDURE cleanboard()
 BEGIN
-	DROP TABLE IF EXISTS `board`;
+	DROP TABLE  IF EXISTS `board`;
 	CREATE TABLE board SELECT * FROM board_empty;
 	 		/*set tile=null, last_change=null;*/
   			/*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
   		update `gamestatus` set `status`='not active', `p_turn`=null, `result`=null,  `last_change` =null;
 END//
 DELIMITER ;
-
+/*
 CALL cleanboard();
 
 SELECT * FROM gamestatus;
 SELECT * FROM board;
-
+*/
 
 DROP procedure IF EXISTS `tile_shuffle`;
 DELIMITER //
@@ -160,10 +160,12 @@ BEGIN
 
 DELIMITER ;
 
+
+/*
 SELECT * FROM tile;
 
 CALL tile_shuffle();
-
+/*
 /*
 # SELECT COUNT(*) FROM clonetile;
 # select * from clonetile;
@@ -208,12 +210,13 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
 
 CALL update_sharetile();
 
 SELECT * FROM sharetile;
 
-SELECT COUNT(*) FROM sharetile WHERE player_name='vasilis';
+SELECT COUNT(*) FROM sharetile WHERE player_name='vasilis'; */
 
 /*DROP PROCEDURE IF EXISTS `play_tile`;
 DELIMITER//
@@ -250,6 +253,7 @@ BEGIN
 END //
 DELIMITER ;
 #last udate
+/*
 CALL cleanboard();
 
 CALL play_tile('1','6-3');
@@ -262,7 +266,7 @@ SELECT * FROM sharetile;
 
 SELECT * from gamestatus;
 
-
+*/
 
 
 
