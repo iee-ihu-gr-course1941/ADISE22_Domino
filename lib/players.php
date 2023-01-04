@@ -25,11 +25,11 @@ function show_user($b) {
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
-function set_user($b,$input) {
-	$id=0;
+function set_user($input) {
+	//$id=0;
 	global $mysqli;
 	
-    if(!isset($input['username']) || $input['username']=='') {
+    if(!isset($input['name']) || $input['name']=='') {
 		header("HTTP/1.1 400 Bad Request");
 		print json_encode(['errormesg'=>"No username given."]);
 		exit;
@@ -45,14 +45,14 @@ function set_user($b,$input) {
 	}
 
 	if($status['status']=='aborded'||$status['status']=='ended'){
-		$sql = 'call clean_board()';
+		$sql = 'call cleanboard()';
 	    $mysqli->query($sql);
 	}
 
 	
 
-	$username=$input['username'];
-	$sql2 = 'select count(*) as c from players where username=?';
+	$username=$input['name'];
+	$sql2 = 'select count(*) as c from players where name=?';
 	$st2 = $mysqli->prepare($sql2);
 	$st2->bind_param('s',$username);
 	$st2->execute();
@@ -66,7 +66,7 @@ function set_user($b,$input) {
 	}
 
 	
-	$sql = 'select count(*) as c from players where id=1 and username is not null';
+	$sql = 'select count(*) as c from players where id=1 and name is not null';
 	$st = $mysqli->prepare($sql);
 	$st->execute();
 	$res = $st->get_result();
@@ -74,13 +74,13 @@ function set_user($b,$input) {
 
 	if($r[0]['c']>0) {
         $id='2';
-        $sql = 'update players set username=?, token=md5(CONCAT( ?, NOW()))  where id=?';
+        $sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
 	    $st2 = $mysqli->prepare($sql);
 	    $st2->bind_param('ssi',$username,$username,$id);
 	    $st2->execute();
 	}else{
         $id='1';
-        $sql = 'update players set username=?, token=md5(CONCAT( ?, NOW()))  where id=?';
+        $sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
 	    $st2 = $mysqli->prepare($sql);
 	    $st2->bind_param('ssi',$username,$username,$id);
 	    $st2->execute();

@@ -1,18 +1,21 @@
-var me={token:null,id:null,username:null,lastactino:null};
+var me={token:null,id:null,username:null};
 var game_status={};
-var board={};
+//var board={};
 var last_update=new Date().getTime();
 var timer=null;
 
 
 
 $(function(){
-	$('#gamelogin').click(login_to_game);
+
+	drawBoard('board1');
+	drawBoard('board2');
+	//$('#gamelogin').click(login_to_game);
+	$('#gamelogin').click( login_to_game);
+	
 });
 
 
- drawBoard('board1');
- drawBoard('board2');
 
 
 function drawBoard(canvasId) {
@@ -53,7 +56,7 @@ function showOpponentTiles(){
 
 function login_result(data) {
 	me = data;
-	window.HTMLTableCaptionElement.
+	window.location.hash="play";
 	game_status_update();
 }
 

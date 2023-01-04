@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS `board` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Dumping data for table lousi.board: ~2 rows (approximately)
-INSERT INTO `board` (`bid`, `btile`, `last_change`) VALUES
-	('1', NULL, '2023-01-04 19:29:07'),
-	('2', NULL, '2023-01-04 19:29:07');
+INSERT INTO `board` (`bid`) VALUES
+	('1'),
+	('2');
 
 -- Dumping structure for πίνακας lousi.board_empty
 CREATE TABLE IF NOT EXISTS `board_empty` (
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `board_empty` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Dumping data for table lousi.board_empty: ~0 rows (approximately)
-
+#DROP PROCEDURE cleanboard ;
 -- Dumping structure for procedure lousi.cleanboard
 DELIMITER //
 CREATE PROCEDURE `cleanboard`()
@@ -51,6 +51,10 @@ BEGIN
 	 		/*set tile=null, last_change=null;*/
   			/*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
   		update `gamestatus` set `status`='not active', `p_turn`=null, `result`=null,  `last_change` =null;
+  		INSERT INTO `board` (`bid`) VALUES
+			('1'),
+			('2');
+
 END//
 DELIMITER ;
 
@@ -65,7 +69,9 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
   `result` enum('1','2') DEFAULT NULL,
   `last_change` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
+
+ INSERT INTO gamestatus(id) VALUES(1);
 
 -- Dumping data for table lousi.gamestatus: ~0 rows (approximately)
 
@@ -84,6 +90,8 @@ CREATE TABLE IF NOT EXISTS `players` (
 /*
 
 INSERT INTO players(name) values ('vasilis');
+playersUPDATE players set token=md5(CONCAT('vasilis', NOW()))
+where name=vasilis;
 
 select * from players;
 */
@@ -107,9 +115,10 @@ BEGIN
   		 
 END//
 DELIMITER ;
-
+ 
 /*#call play_tile('1',(1-0)); 
 	select * from board;
+	select * from gamestatus;
 */
 
 -- Dumping structure for πίνακας lousi.sharetile

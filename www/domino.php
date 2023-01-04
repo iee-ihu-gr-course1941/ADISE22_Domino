@@ -27,7 +27,7 @@ switch($r=array_shift($request)){
         break;
     case'status':show_status($method,$request,$input);
         break;
-    case'board':show_board($method,$request,$input);
+    case'board':handle_board($method,$request,$input);
         break;
     default :header("HTTP/1.1 404 NOT Found");
         exit;
@@ -62,6 +62,16 @@ function handle_status($method) {
     } else {
         header('HTTP/1.1 405 Method Not Allowed');
     }
+}
+
+
+function handle_board($method) {
+    if($method=='GET') {
+        show_board();
+    } else if ($method=='POST') {
+        reset_board();
+    } else{header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"Method $method not allowed here."]);}
 }
 
 
