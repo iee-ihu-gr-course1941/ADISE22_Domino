@@ -1,7 +1,18 @@
 <?php 
+	require_once "../lib/board.php";
 	require_once "../lib/players.php";
 
 
+
+function sharetiles(){
+	global $mysqli;
+	$sql = 'call update_sharetile';
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+	header('Content-type: application/json');
+	//print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
 
 function show_status(){
 	

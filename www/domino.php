@@ -29,11 +29,32 @@ switch($r=array_shift($request)){
         break;
     case'board':handle_board($method,$request,$input);
         break;
+    case'tiles':handle_tiles($method,$request,$input);
+        break;
     default :header("HTTP/1.1 404 NOT Found");
         exit;
-
-    
      
+
+}
+
+
+function handle_tiles($method,$p){
+    $b=array_shift($p);
+    if($b=='' or null){
+    if($method=='GET'){
+        show_sharedtiles();
+    }
+    elseif($method=='POST'){
+        sharetiles();
+    }
+}else{
+    if($method=='GET'){
+        show_players_sharedtiles($b);
+        }else{header("HTTP/1.1 400 Bad Request");
+            print json_encode(['errormesg'=>"Method $method not allowed here."]);}
+    }
+    
+
 
 }
 

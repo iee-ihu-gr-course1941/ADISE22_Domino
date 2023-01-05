@@ -119,6 +119,7 @@ DELIMITER ;
 /*#call play_tile('1',(1-0)); 
 	select * from board;
 	select * from gamestatus;
+	select * from sharetile;
 */
 
 -- Dumping structure for πίνακας lousi.sharetile
@@ -219,6 +220,13 @@ BEGIN
  
 END//
 DELIMITER ;
+
+/*
+	
+	call update_sharetile;
+	select * from sharetile;
+	
+*/
 
 
 

@@ -97,6 +97,35 @@ function set_user($input) {
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 		
 }
+
+
+
+
+
+function show_sharedtiles(){
+	global $mysqli;
+	$sql = 'select * from sharetile';
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
+function show_players_sharedtiles($b){
+	global $mysqli;
+	$sql = 'select * from sharetile where player_name=?';
+	$st = $mysqli->prepare($sql);
+	$st->bind_param('s',$b);
+	$st->execute();
+	$res = $st->get_result();
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
+
+
+
 	
 	/*
 	$sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
