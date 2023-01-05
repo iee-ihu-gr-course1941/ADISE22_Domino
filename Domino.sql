@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `players` (
 
 /*
 
-INSERT INTO players(name) values ('vasilis');
+INSERT INTO players(name) values ('vasilis2');
 playersUPDATE players set token=md5(CONCAT('vasilis', NOW()))
 where name=vasilis;
 
@@ -99,37 +99,44 @@ select * from players;
 
 
 -- Dumping structure for procedure lousi.play_tile
+DROP PROCEDURE IF EXISTS `play_tile`;
 DELIMITER //
-CREATE PROCEDURE `play_tile`(IN p_id ENUM ('1','2'), IN tile_name VARCHAR(15))
+CREATE PROCEDURE `play_tile` (IN ptile_name VARCHAR(15), IN p_id INT)
 BEGIN
-  	UPDATE board
+	UPDATE board
   	SET
-	  btile=tile_name,
+	  btile=ptile_name,
 	  last_change = NOW()
   	where bid=p_id;
+  	
+  	DELETE FROM sharetile WHERE tile_name=ptile_name;
   	
   	UPDATE gamestatus
   	SET  p_turn=p_id,
   		status='started'
   	WHERE id=1;
-  		 
-END//
+  	
+END //
 DELIMITER ;
- 
-/*#call play_tile('1',(1-0)); 
+
+/*#CALL play_tile('2-2', '2');
+select * from players;
 	select * from board;
 	select * from gamestatus;
 	select * from sharetile;
+	SELECT * FROM sharetile WHERE tile_name LIKE '%1%';
+	SELECT * FROM board WHERE bid IN (1, 2) AND btile IS NULL;
 */
 
 -- Dumping structure for πίνακας lousi.sharetile
+DROP TABLE IF EXISTS sharetile;
 CREATE TABLE IF NOT EXISTS `sharetile` (
   `id` int(11) NOT NULL,
   `tile_name` varchar(15) DEFAULT NULL,
   `player_name` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
+#DROP TABLE sharetile;
 -- Dumping data for table lousi.sharetile: ~0 rows (approximately)
 
 -- Dumping structure for πίνακας lousi.tile
