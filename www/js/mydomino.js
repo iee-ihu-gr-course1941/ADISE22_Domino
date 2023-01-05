@@ -34,7 +34,7 @@ function login_to_game() {
 		return;
 	}
 	
-	$.ajax({url: "api.php/players", 
+	$.ajax({url: "domino.php/players", 
 			method: 'PUT',
 			dataType: "json",
 			contentType: 'application/json',
@@ -44,15 +44,11 @@ function login_to_game() {
 }
 
 function filltiles(){
-	$.ajax({url:"domino.php/tile",
+	$.ajax({url:"domino.php/tiles",
 			headers:{"X-Token": me.token},
 			success: fill_tiles});
 }
 
-
-function showOpponentTiles(){
-
-}
 
 function login_result(data) {
 	me = data;

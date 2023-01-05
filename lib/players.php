@@ -34,8 +34,10 @@ function set_user($input) {
 		print json_encode(['errormesg'=>"No username given."]);
 		exit;
 	}
-	check_abort();
-	$status = read_status();
+
+	//check_abort();
+	 
+	/*$status = read_status();
 	if($status['status']=='started') {
 		header("HTTP/1.1 400 Bad Request");
 		print json_encode(['errormesg'=>"Game is in action."]);
@@ -44,7 +46,7 @@ function set_user($input) {
 	if($status['status']=='aborded'||$status['status']=='ended'){
 		$sql = 'call cleanboard()';
 	    $mysqli->query($sql);
-	}
+	} */
 	$username=$input['name'];
 	$sql2 = 'select count(*) as c from players where name=?';
 	$st2 = $mysqli->prepare($sql2);
