@@ -3,7 +3,15 @@
 	require_once "../lib/players.php";
 
 
-
+function play_tile($tilename,$player){
+	global $mysqli;
+	$sql = "CALL play_tile('$tilename','$player')";
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+	
+}
+	 
 function sharetiles(){
 	global $mysqli;
 	$sql = 'call update_sharetile';

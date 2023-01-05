@@ -26,7 +26,7 @@ function show_user($b) {
 }
 
 function set_user($input) {
-	//$id=0;
+	$id=0;
 	global $mysqli;
 	
     if(!isset($input['name']) || $input['name']=='') {
@@ -34,23 +34,17 @@ function set_user($input) {
 		print json_encode(['errormesg'=>"No username given."]);
 		exit;
 	}
-
 	check_abort();
-	
 	$status = read_status();
 	if($status['status']=='started') {
 		header("HTTP/1.1 400 Bad Request");
 		print json_encode(['errormesg'=>"Game is in action."]);
 		exit;
 	}
-
 	if($status['status']=='aborded'||$status['status']=='ended'){
 		$sql = 'call cleanboard()';
 	    $mysqli->query($sql);
 	}
-
-	
-
 	$username=$input['name'];
 	$sql2 = 'select count(*) as c from players where name=?';
 	$st2 = $mysqli->prepare($sql2);
@@ -76,13 +70,13 @@ function set_user($input) {
         $id='2';
         $sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
 	    $st2 = $mysqli->prepare($sql);
-	    $st2->bind_param('ssi',$username,$username,$id);
+	    $st2->bind_param('naii',$username,$username,$id);
 	    $st2->execute();
 	}else{
         $id='1';
         $sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
 	    $st2 = $mysqli->prepare($sql);
-	    $st2->bind_param('ssi',$username,$username,$id);
+	    $st2->bind_param('naii',$username,$username,$id);
 	    $st2->execute();
     }
 	
@@ -94,7 +88,7 @@ function set_user($input) {
 	$st->execute();
 	$res = $st->get_result();
 	header('Content-type: application/json');
-	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT); 
 		
 }
 

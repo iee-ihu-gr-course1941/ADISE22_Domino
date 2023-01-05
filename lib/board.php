@@ -2,18 +2,7 @@
 
 
 /*its not completed for sure*/
-/*
-function read_status()
-{
-	global $mysqli;
-	$sql = 'select * from gameStatus';
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	$res = $st->get_result();
-	$status = $res->fetch_assoc();
-	return ($status);
-}
-*/
+
 function reset_board(){
 	global $mysqli;
 
@@ -32,6 +21,13 @@ function show_board(){
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
+
+
+
+
+
+
+/*
 function show_tiles($x,$y) {
 	global $mysqli;
 	
@@ -43,7 +39,7 @@ function show_tiles($x,$y) {
 	header('Content-type: application/json');
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
-
+*/
 /*
 function fill_board($x,$y){
 	global $mysqli;
@@ -59,7 +55,19 @@ function fill_board($x,$y){
 
 }
 
+function read_status()
+{
+	global $mysqli;
+	$sql = 'select * from gameStatus';
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+	$status = $res->fetch_assoc();
+	return ($status);
+}
+*/
 
-?>*/
 
 ?>
+
+

@@ -7,7 +7,8 @@ require_once "../lib/players.php";
 $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true);
-
+$tilename='';
+$player='';
 
 if($input==null) {
     $input=[];
@@ -31,10 +32,22 @@ switch($r=array_shift($request)){
         break;
     case'tiles':handle_tiles($method,$request,$input);
         break;
+    case'play':handle_game($method,$tilename,$player,$request,$input);
+        break;
     default :header("HTTP/1.1 404 NOT Found");
         exit;
      
 
+}
+
+function handle_game($method,$tilename,$player,$input){
+  // $pi=array_shift($p);
+   // $d=array_shift($id);
+    if($method=='GET') {
+        show_board();
+    }elseif($method=='PUT'){
+        play_tile($tilename,$player);
+    }
 }
 
 
