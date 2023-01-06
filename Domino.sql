@@ -127,20 +127,21 @@ DECLARE cnt INT;
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	
 	  	UPDATE gamestatus
-	  	SET  p_turn=p_id,
+	  	SET  p_turn=if(p_id='1','2','1'),
 	  		status='started'
 	  	WHERE id=1;
   	END IF;
   	
 END //
 DELIMITER ;
-
-/*#CALL play_tile('1-4', '2');
+#update game_status set p_turn=if(p_color='W','B','W');
+/*#CALL play_tile('6-6', '2');
 select * from players;
 	select * from board;
 	select * from players;
 	select * from gamestatus;
 	call cleanboard();
+	INSERT INTO `gamestatus`(`id`) VALUES ('1');  
 	select * from sharetile;
 	select count(*) as c from sharetile where tile_name='0-1'
 	SELECT * FROM sharetile WHERE tile_name LIKE '%1%';
