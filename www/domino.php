@@ -57,7 +57,7 @@ function handle_tiles($method,$p){
     if($method=='GET'){
         show_sharedtiles();
     }
-    elseif($method=='POST'){
+    elseif($method=='PUT'){
         sharetiles();
     }
 }else{
