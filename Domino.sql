@@ -76,17 +76,26 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
 -- Dumping data for table lousi.gamestatus: ~0 rows (approximately)
 
 -- Dumping structure for πίνακας lousi.players
+DROP TABLE IF EXISTS `players`;
 CREATE TABLE IF NOT EXISTS `players` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(10) NOT NULL,
   `token` varchar(100) DEFAULT NULL,
   `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
+
+
 
 -- Dumping data for table lousi.players: ~0 rows (approximately)
 
+/*select count(*) from players where id=1 and name is not NULL;
+INSERT INTO `players` (`last_action`) VALUES
+	( '2023-1-5 17:16:54');
 
+SELECT * FROM players;
+SELECT COUNT(*) FROM `players`;
+INSERT INTO  `players` (`name`,`token`)VALUES  ('villa',md5(CONCAT( 'villa', NOW())));*/
 /*
 
 INSERT INTO players(name) values ('vasilis2');
@@ -122,6 +131,7 @@ DELIMITER ;
 /*#CALL play_tile('2-2', '2');
 select * from players;
 	select * from board;
+	select * from players;
 	select * from gamestatus;
 	select * from sharetile;
 	SELECT * FROM sharetile WHERE tile_name LIKE '%1%';

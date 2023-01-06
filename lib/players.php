@@ -26,7 +26,6 @@ function show_user($b) {
 }
 
 function set_user($input) {
-	$id=0;
 	global $mysqli;
 	
     if(!isset($input['name']) || $input['name']=='') {
@@ -34,65 +33,66 @@ function set_user($input) {
 		print json_encode(['errormesg'=>"No username given."]);
 		exit;
 	}
-
-	//check_abort();
-	 
-	/*$status = read_status();
-	if($status['status']=='started') {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"Game is in action."]);
-		exit;
-	}
-	if($status['status']=='aborded'||$status['status']=='ended'){
-		$sql = 'call cleanboard()';
-	    $mysqli->query($sql);
-	} */
 	$username=$input['name'];
-	$sql2 = 'select count(*) as c from players where name=?';
-	$st2 = $mysqli->prepare($sql2);
-	$st2->bind_param('s',$username);
-	$st2->execute();
-	$res2 = $st2->get_result();
-	$r2 = $res2->fetch_all(MYSQLI_ASSOC);
-	
-	if($r2[0]['c']>0){
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"This username already exists."]);
-		exit;
-	}
-
-	
-	$sql = 'select count(*) as c from players where id=1 and name is not null';
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	$res = $st->get_result();
-	$r = $res->fetch_all(MYSQLI_ASSOC);
-
-	if($r[0]['c']>0) {
-        $id='2';
-        $sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
-	    $st2 = $mysqli->prepare($sql);
-	    $st2->bind_param('naii',$username,$username,$id);
+	$sql = 'select count(*) as c from players';
+	$st1 = $mysqli->prepare($sql);
+	//$st1->bind_param('s',$username);
+	$st1->execute();
+	$res = $st1->get_result();
+	$r1 = $res->fetch_all(MYSQLI_ASSOC);
+	if($r1[0]['c']==0){
+        $sql2 = 'insert into  `players` (`name`,`token`) VALUES  (?,md5(CONCAT( ?, NOW())))';
+	    $st2 = $mysqli->prepare($sql2);
+	    $st2->bind_param('ss',$username,$username);
 	    $st2->execute();
 	}else{
-        $id='1';
-        $sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
-	    $st2 = $mysqli->prepare($sql);
-	    $st2->bind_param('naii',$username,$username,$id);
-	    $st2->execute();
-    }
+		$sql3 = 'select count(*) as c from players where name=?';
+		$st3 = $mysqli->prepare($sql3);
+		$st3->bind_param('s',$username);
+		$st3->execute();
+		$res3 = $st3->get_result();
+		$r3 = $res3->fetch_all(MYSQLI_ASSOC);
+			if($r3[0]['c']>0)
+		{
+			header("HTTP/1.1 400 Bad Request");
+			print json_encode(['errormesg'=>"This username already exists."]);
+			//exit;
+		}else{
+			$sql = 'select count(*) as c from players';
+			$st5 = $mysqli->prepare($sql);
+			$st3->bind_param('s',$username);
+			$st5->execute();
+			$res5 = $st5->get_result();
+			$r5 = $res5->fetch_all(MYSQLI_ASSOC);
+			
+			if($r5[0]['c']>=2){
+				header("HTTP/1.1 400 Bad Request");
+				print json_encode(['errormesg'=>"To many players.Please come later"]);
+				
+		}else{
+		$sql = 'insert into  `players` (`name`,`token`) VALUES  (?,md5(CONCAT( ?, NOW())))';
+	    $st4 = $mysqli->prepare($sql);
+	    $st4->bind_param('ss',$username,$username);
+	    $st4->execute();}
+	}
+	}
 	
-
-	update_game_status();
-	$sql = 'select * from players where id=?';
-	$st = $mysqli->prepare($sql);
-	$st->bind_param('i',$id);
-	$st->execute();
-	$res = $st->get_result();
-	header('Content-type: application/json');
-	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT); 
+		
 		
 }
+	
+	
+
+	//update_game_status();
+	//$sql = 'select * from players where id=?';
+	//$st = $mysqli->prepare($sql);
+	//$st->bind_param('i',$id);
+	//$st->execute();
+	//$res = $st->get_result();
+	//header('Content-type: application/json');
+	//print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT); 
+		
+
 
 
 
@@ -122,6 +122,18 @@ function show_players_sharedtiles($b){
 
 
 
+	//check_abort();
+	 
+	/*$status = read_status();
+	if($status['status']=='started') {
+		header("HTTP/1.1 400 Bad Request");
+		print json_encode(['errormesg'=>"Game is in action."]);
+		exit;
+	}
+	if($status['status']=='aborded'||$status['status']=='ended'){
+		$sql = 'call cleanboard()';
+	    $mysqli->query($sql);
+	} */
 	
 	/*
 	$sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
