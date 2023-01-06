@@ -8,8 +8,8 @@ function play_tile($tilename,$player){
 	$sql = "CALL play_tile('$tilename','$player')";
 	$st = $mysqli->prepare($sql);
 	$st->execute();
+	$st->bind_param('si',$tilename,$player);
 	$res = $st->get_result();
-	
 }
 	 
 function sharetiles(){
@@ -50,51 +50,24 @@ function check_abort() {
 
 function update_gameStatus() {
 	global $mysqli;
-	
-	$sql = 'select * from gameStatus';
+	//$new_status=null;
+	//$new_turn=null;
+	$sql = 'select count(*) as c from players';
 	$st = $mysqli->prepare($sql);
-
 	$st->execute();
 	$res = $st->get_result();
 	$status = $res->fetch_assoc();
-	
-	
-	$new_status=null;
-	$new_turn=null;
-	
-	$st3=$mysqli->prepare('select count(*) as aborted from players WHERE last_action< (NOW() - INTERVAL 10 MINUTE)');
-	$st3->execute();
-	$res3 = $st3->get_result();
-	$aborted = $res3->fetch_assoc()['aborted'];
-	if($aborted>0) {
-		$sql = "UPDATE players SET name=NULL, token=NULL WHERE last_action< (NOW() - INTERVAL 10 MINUTE)";
-		$st2 = $mysqli->prepare($sql);
-		$st2->execute();
+	if($r1[0]['c']!==2){
+		$sql2 = 'insert into gamestatus(id) VALUES(1)';
+	    $st2 = $mysqli->prepare($sql2);
+	    $st2->execute();
+	}else{
+		$sql2 = 'update gamestatus SET status="started" p_turn="1"';
+	    $st2 = $mysqli->prepare($sql2);
+	    $st2->execute();
 	}
-
 	
-	$sql = 'select count(*) as c from players where name is not null';
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	$res = $st->get_result();
-	$active_players = $res->fetch_assoc()['c'];
-	
-	
-	switch($active_players) {
-		case 0: $new_status='not active'; break;
-		case 1: $new_status='initialized'; break;
-		case 2: $new_status='started'; 
-				if($status['p_turn']==null) {
-					$new_turn='1'; // It was not started before...
-				}
-				break;
 	}
-
-	$sql = 'update gameStatus set status=?, p_turn=?';
-	$st = $mysqli->prepare($sql);
-	$st->bind_param('ss',$new_status,$new_turn);
-	$st->execute();
-}
 
 
 function read_status(){
