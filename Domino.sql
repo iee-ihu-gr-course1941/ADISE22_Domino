@@ -117,7 +117,7 @@ DECLARE cnt INT;
 	SELECT COUNT(*) INTO cnt FROM sharetile WHERE tile_name=ptile_name;
 	IF cnt = 0 THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tile does not exist in sharetile table';
-	ELSE
+	ELSE 
 		UPDATE board
 	  	SET
 		  btile=ptile_name
@@ -135,13 +135,14 @@ DECLARE cnt INT;
 END //
 DELIMITER ;
 
-/*#CALL play_tile('1-5', '2');
+/*#CALL play_tile('1-4', '2');
 select * from players;
 	select * from board;
 	select * from players;
 	select * from gamestatus;
 	call cleanboard();
 	select * from sharetile;
+	select count(*) as c from sharetile where tile_name='0-1'
 	SELECT * FROM sharetile WHERE tile_name LIKE '%1%';
 	SELECT * FROM board WHERE bid IN (1, 2) AND btile IS NULL;
 */

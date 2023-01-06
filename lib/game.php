@@ -6,11 +6,22 @@
 
 function play_tile($tilename,$player){
 	global $mysqli;
-	$sql = "CALL play_tile('$tilename','$player')";
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	$st->bind_param('si',$tilename,$player);
-	$res = $st->get_result();
+	$sql = 'select count(*) as c from sharetile where tile_name=?';
+	$st1 = $mysqli->prepare($sql);
+	$st1->bind_param('s',$tilename);
+	$st1->execute();
+	$res2 = $st1->get_result();
+	$tilehand = $res2 ->fetch_all(MYSQLI_ASSOC);
+	if ($tilehand[0]['c']==1){
+		$sql = "CALL play_tile(?, ?)";
+		$st = $mysqli->prepare($sql);
+		$st->bind_param('si', $tilename, $player);
+		$st->execute();
+		$res = $st->get_result();
+	}else{
+		header("HTTP/1.1 400 Bad Request");
+		print json_encode(['errormesg'=>"Tile does not exist in sharetile table"]);
+		}
 }
 	 
 function sharetiles(){
@@ -35,15 +46,6 @@ function show_status(){
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 
 }
-
-/* function check_abort() {
-	global $mysqli;
-	
-	$sql = "update gamestatus set status='aborded',result=if(p_turn='1','2','1'), p_turn=null where p_turn is not null and last_change<(now()-INTERVAL 10 MINUTE) and status='started'";
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	
-}  */
 
 function update_gameStatus() {
 	global $mysqli;
@@ -91,7 +93,14 @@ function setResult($id){
         $st->bind_param('ss',$id,$p_turn);
         $st->execute() */;
     }
-
+/* function check_abort() {
+	global $mysqli;
+	
+	$sql = "update gamestatus set status='aborded',result=if(p_turn='1','2','1'), p_turn=null where p_turn is not null and last_change<(now()-INTERVAL 10 MINUTE) and status='started'";
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	
+}  */
 /*it needed check again for sure*/
 
 ?>
