@@ -114,8 +114,8 @@ CREATE PROCEDURE `play_tile` (IN ptile_name VARCHAR(15), IN p_id INT)
 BEGIN
 	UPDATE board
   	SET
-	  btile=ptile_name,
-	  last_change = NOW()
+	  btile=ptile_name
+	  #last_change = NOW()
   	where bid=p_id;
   	
   	DELETE FROM sharetile WHERE tile_name=ptile_name;
@@ -128,11 +128,12 @@ BEGIN
 END //
 DELIMITER ;
 
-/*#CALL play_tile('2-2', '2');
+/*#CALL play_tile('5-3', '2');
 select * from players;
 	select * from board;
 	select * from players;
 	select * from gamestatus;
+	call cleanboard();
 	select * from sharetile;
 	SELECT * FROM sharetile WHERE tile_name LIKE '%1%';
 	SELECT * FROM board WHERE bid IN (1, 2) AND btile IS NULL;
