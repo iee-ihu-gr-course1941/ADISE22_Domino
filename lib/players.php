@@ -34,52 +34,43 @@ function set_user($input) {
 		exit;
 	}
 	$username=$input['name'];
-	$sql = 'select count(*) as c from players';
-	$st1 = $mysqli->prepare($sql);
-	//$st1->bind_param('s',$username);
-	$st1->execute();
-	$res = $st1->get_result();
-	$r1 = $res->fetch_all(MYSQLI_ASSOC);
-	if($r1[0]['c']==0){
-        $sql2 = 'insert into  `players` (`name`,`token`) VALUES  (?,md5(CONCAT( ?, NOW())))';
-	    $st2 = $mysqli->prepare($sql2);
-	    $st2->bind_param('ss',$username,$username);
-	    $st2->execute();
-	}else{
-		$sql3 = 'select count(*) as c from players where name=?';
-		$st3 = $mysqli->prepare($sql3);
-		$st3->bind_param('s',$username);
-		$st3->execute();
-		$res3 = $st3->get_result();
-		$r3 = $res3->fetch_all(MYSQLI_ASSOC);
-			if($r3[0]['c']>0)
-		{
-			header("HTTP/1.1 400 Bad Request");
-			print json_encode(['errormesg'=>"This username already exists."]);
-			//exit;
-		}else{
-			$sql = 'select count(*) as c from players';
-			$st5 = $mysqli->prepare($sql);
-			$st3->bind_param('s',$username);
-			$st5->execute();
-			$res5 = $st5->get_result();
-			$r5 = $res5->fetch_all(MYSQLI_ASSOC);
-			
-			if($r5[0]['c']>=2){
-				header("HTTP/1.1 400 Bad Request");
-				print json_encode(['errormesg'=>"To many players.Please come later"]);
-				
-		}else{
-		$sql = 'insert into  `players` (`name`,`token`) VALUES  (?,md5(CONCAT( ?, NOW())))';
-	    $st4 = $mysqli->prepare($sql);
-	    $st4->bind_param('ss',$username,$username);
-	    $st4->execute();}
+	// Check if username already exists
+	$sql = 'SELECT COUNT(*) AS c FROM players WHERE name=?';
+	$stmt = $mysqli->prepare($sql);
+	$stmt->bind_param('s', $username);
+	$stmt->execute();
+	$res = $stmt->get_result();
+	$row = $res->fetch_assoc();
+	if($row['c'] > 0) {
+    	header("HTTP/1.1 400 Bad Request");
+    	print json_encode(['errormesg'=>"This username already exists."]);
+    	exit;
 	}
+
+// Check if there are already 2 players
+	$sql = 'SELECT COUNT(*) AS c FROM players';
+	$stmt = $mysqli->prepare($sql);
+	$stmt->execute();
+	$res = $stmt->get_result();
+	$row = $res->fetch_assoc();
+	if($row['c'] >= 2) {
+    	header("HTTP/1.1 400 Bad Request");
+    	print json_encode(['errormesg'=>"To many players.Please come later"]);
+    	exit;
 	}
+
+// Insert new player
+	$sql = 'INSERT INTO players (name, token) VALUES (?, md5(CONCAT(?, NOW())))';
+	$stmt = $mysqli->prepare($sql);
+	$stmt->bind_param('ss', $username, $username);
+	$stmt->execute();
+
+	update_gameStatus();
+}
+	
 	
 		
-		
-}
+
 	
 	
 

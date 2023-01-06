@@ -25,15 +25,11 @@ function sharetiles(){
 function show_status(){
 	
 	global $mysqli;
-	
 	//check_abort();
-	
 	$sql = 'select * from gamestatus';
 	$st = $mysqli->prepare($sql);
-
 	$st->execute();
 	$res = $st->get_result();
-
 	header('Content-type: application/json');
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 
@@ -50,24 +46,29 @@ function check_abort() {
 
 function update_gameStatus() {
 	global $mysqli;
-	//$new_status=null;
-	//$new_turn=null;
+	
 	$sql = 'select count(*) as c from players';
 	$st = $mysqli->prepare($sql);
 	$st->execute();
 	$res = $st->get_result();
-	$status = $res->fetch_assoc();
-	if($r1[0]['c']!==2){
-		$sql2 = 'insert into gamestatus(id) VALUES(1)';
-	    $st2 = $mysqli->prepare($sql2);
-	    $st2->execute();
-	}else{
-		$sql2 = 'update gamestatus SET status="started" p_turn="1"';
-	    $st2 = $mysqli->prepare($sql2);
-	    $st2->execute();
-	}
-	
-	}
+	$status = $res->fetch_all(MYSQLI_ASSOC);
+	if ($status[0]['c']==0) {
+		$sql = 'insert into gamestatus(id) VALUES(1)';
+		$st2 = $mysqli->prepare($sql);
+		$r= $st2->execute();
+		exit;
+	  } elseif ($status[0]['c']==1) {
+		$sql = 'insert into gamestatus(id) VALUES(1)';
+		$st2 = $mysqli->prepare($sql);
+		$r= $st2->execute();
+		exit;
+	  } else {
+		$sql ="update gamestatus SET status='started', p_turn='1'";
+		$st = $mysqli->prepare($sql);
+		$r = $st->execute();
+	  }
+		
+}
 
 
 function read_status(){
