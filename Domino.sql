@@ -219,16 +219,22 @@ BEGIN
 	CALL tile_shuffle();
   
   	while (counter<28) DO
-  
+  		#Βαζουμε id οτι ειναι και το counter πχ.αν counter=1 insert 1 
   		INSERT INTO sharetile(id) VALUES
   		(counter);
-  
+  		# kanoyme update to share tile diladi theloyme na paroyme ton pinaka clone tile pou exoume ta tiles se random metrisi kai oxi me tin siria opote
   		UPDATE sharetile
-  		SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1)
+  		SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1)  
   		WHERE tile_name IS NULL;
+  		/*kanoume se sto tile_name to orisma pou pernoyme apo to query 
+		  select tilename apo to tilename randomny ena ena opou to to tile_name apo ton pinaka sharetile=null*/
+		  
   		DELETE FROM clonetile  WHERE tilename  IN (SELECT c.tilename FROM clonetile c INNER JOIN sharetile s WHERE c.tilename=s.tile_name);
-  
+  			/* 
+			  Diagrafoyme apo to clonetile opou onoma einai idio me to onoma tile_name apo ton pinaka sharetile etsi wste na min exoume diplo egrafes
+			  */
 
+		#Stin sinexeia vazoyme tuxea onomata apo ton pinaka players ston pinaka share tile tuxea kai isa etsi wste na exoume ta tiles tou kathe pexti
   		UPDATE sharetile t
 		SET t.player_name = (
   		SELECT p.name
