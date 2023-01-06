@@ -56,9 +56,7 @@ function set_user($input) {
 	if($row['c'] >= 2) {
     	header("HTTP/1.1 400 Bad Request");
     	print json_encode(['errormesg'=>"To many players.Please come later"]);
-    	exit;
-	}
-
+    	exit;}
 // Insert new player
 	$sql = 'INSERT INTO players (name, token) VALUES (?, md5(CONCAT(?, NOW())))';
 	$stmt = $mysqli->prepare($sql);
@@ -67,28 +65,6 @@ function set_user($input) {
 
 	update_gameStatus();
 }
-	
-	
-		
-
-	
-	
-
-	//update_game_status();
-	//$sql = 'select * from players where id=?';
-	//$st = $mysqli->prepare($sql);
-	//$st->bind_param('i',$id);
-	//$st->execute();
-	//$res = $st->get_result();
-	//header('Content-type: application/json');
-	//print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT); 
-		
-
-
-
-
-
-
 function show_sharedtiles(){
 	global $mysqli;
 	$sql = 'select * from sharetile';
@@ -111,9 +87,28 @@ function show_players_sharedtiles($b){
 }
 
 
+function current_player($token) {
+	
+	global $mysqli;
+	if($token==null) {return(null);}
+	$sql = 'select * from players where token=?';
+	$st = $mysqli->prepare($sql);
+	$st->bind_param('s',$token);
+	$st->execute();
+	$res = $st->get_result();
+	if($row=$res->fetch_assoc()) {
+		return($row['id']);
+	}
+	return(null);
+}
 
 
-	//check_abort();
+//Σχεδον τελος με τους Players just checking 
+
+
+
+
+//check_abort();
 	 
 	/*$status = read_status();
 	if($status['status']=='started') {
@@ -142,23 +137,6 @@ function show_players_sharedtiles($b){
 	*/ 
 
 
-function current_player($token) {
-	
-	global $mysqli;
-	if($token==null) {return(null);}
-	$sql = 'select * from players where token=?';
-	$st = $mysqli->prepare($sql);
-	$st->bind_param('s',$token);
-	$st->execute();
-	$res = $st->get_result();
-	if($row=$res->fetch_assoc()) {
-		return($row['id']);
-	}
-	return(null);
-}
-
-
-//Σχεδον τελος με τους Players just checking 
 
 /*
 function handle_user($method, $b,$input) {
@@ -169,4 +147,12 @@ function handle_user($method, $b,$input) {
     }
 }
 */
+//update_game_status();
+	//$sql = 'select * from players where id=?';
+	//$st = $mysqli->prepare($sql);
+	//$st->bind_param('i',$id);
+	//$st->execute();
+	//$res = $st->get_result();
+	//header('Content-type: application/json');
+	//print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT); 
 ?>
