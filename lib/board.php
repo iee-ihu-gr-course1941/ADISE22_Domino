@@ -3,7 +3,7 @@ require_once "../lib/game.php";
 require_once "../lib/players.php";
 require_once "../lib/dbconnection.php";
 
-/*its not completed for sure*/
+/*its not completed for susre*/
 
 function reset_board(){
 	global $mysqli;
