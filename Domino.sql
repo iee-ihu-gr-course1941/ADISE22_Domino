@@ -62,6 +62,7 @@ DELIMITER ;
 
 
 -- Dumping structure for πίνακας lousi.gamestatus
+DROP TABLE IF EXISTS `gamestatus`;
 CREATE TABLE IF NOT EXISTS `gamestatus` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` enum('initialized','started','ended','aborted') NOT NULL DEFAULT 'initialized',
@@ -71,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
 
- INSERT INTO gamestatus(id) VALUES(1);
+
 
 -- Dumping data for table lousi.gamestatus: ~0 rows (approximately)
 
@@ -92,12 +93,12 @@ CREATE TABLE IF NOT EXISTS `players` (
 /*select count(*) from players where id=1 and name is not NULL;
 INSERT INTO `players` (`last_action`) VALUES
 	( '2023-1-5 17:16:54');
-
+ INSERT INTO gamestatus(id) VALUES(1);
 SELECT * FROM players;
 SELECT COUNT(*) FROM `players`;
 INSERT INTO  `players` (`name`,`token`)VALUES  ('villa',md5(CONCAT( 'villa', NOW())));*/
 /*
-
+select * from gamestatus;
 INSERT INTO players(name) values ('vasilis2');
 playersUPDATE players set token=md5(CONCAT('vasilis', NOW()))
 where name=vasilis;
@@ -112,23 +113,29 @@ DROP PROCEDURE IF EXISTS `play_tile`;
 DELIMITER //
 CREATE PROCEDURE `play_tile` (IN ptile_name VARCHAR(15), IN p_id INT)
 BEGIN
-	UPDATE board
-  	SET
-	  btile=ptile_name
-	  #last_change = NOW()
-  	where bid=p_id;
-  	
-  	DELETE FROM sharetile WHERE tile_name=ptile_name;
-  	
-  	UPDATE gamestatus
-  	SET  p_turn=p_id,
-  		status='started'
-  	WHERE id=1;
+DECLARE cnt INT;
+	SELECT COUNT(*) INTO cnt FROM sharetile WHERE tile_name=ptile_name;
+	IF cnt = 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tile does not exist in sharetile table';
+	ELSE
+		UPDATE board
+	  	SET
+		  btile=ptile_name
+		  #last_change = NOW()
+	  	where bid=p_id;
+	  	
+	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
+	  	
+	  	UPDATE gamestatus
+	  	SET  p_turn=p_id,
+	  		status='started'
+	  	WHERE id=1;
+  	END IF;
   	
 END //
 DELIMITER ;
 
-/*#CALL play_tile('5-3', '2');
+/*#CALL play_tile('1-5', '2');
 select * from players;
 	select * from board;
 	select * from players;

@@ -1,6 +1,7 @@
 <?php 
 	require_once "../lib/board.php";
 	require_once "../lib/players.php";
+	require_once "../lib/dbconnection.php";
 
 
 function play_tile($tilename,$player){
@@ -35,18 +36,18 @@ function show_status(){
 
 }
 
-function check_abort() {
+/* function check_abort() {
 	global $mysqli;
 	
 	$sql = "update gamestatus set status='aborded',result=if(p_turn='1','2','1'), p_turn=null where p_turn is not null and last_change<(now()-INTERVAL 10 MINUTE) and status='started'";
 	$st = $mysqli->prepare($sql);
 	$st->execute();
 	
-} 
+}  */
 
 function update_gameStatus() {
 	global $mysqli;
-	
+
 	$sql = 'select count(*) as c from players';
 	$st = $mysqli->prepare($sql);
 	$st->execute();
@@ -81,14 +82,14 @@ function read_status(){
 	return ($status);
 }
 
-    function setResult($id){
-        global $mysqli;
+function setResult($id){
+        /* global $mysqli;
         
         $p_turn=null;       
         $sql='update gameStatus set status="ended", result=?, p_turn=?';
         $st = $mysqli->prepare($sql);
         $st->bind_param('ss',$id,$p_turn);
-        $st->execute();
+        $st->execute() */;
     }
 
 /*it needed check again for sure*/

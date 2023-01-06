@@ -1,5 +1,7 @@
 <?php
-
+require_once "../lib/game.php";
+require_once "../lib/players.php";
+require_once "../lib/dbconnection.php";
 
 /*its not completed for sure*/
 
