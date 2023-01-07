@@ -11,9 +11,9 @@ function play_tile($tilename,$player){
 	$st1->bind_param('s',$tilename);
 	$st1->execute();
 	$res2 = $st1->get_result();
-	$tilehand = $res2 ->fetch_all(MYSQLI_ASSOC);
-	if ($tilehand[0]['c']==1){
-		$sql = "CALL play_tile(?, ?)";
+	$tilehand = $res2 -> fetch_assoc();
+	if ($tilehand['c']==0){
+		$sql = "call play_tile(?,?)";
 		$st = $mysqli->prepare($sql);
 		$st->bind_param('si', $tilename, $player);
 		$st->execute();
@@ -22,8 +22,10 @@ function play_tile($tilename,$player){
 		header("HTTP/1.1 400 Bad Request");
 		print json_encode(['errormesg'=>"Tile does not exist in sharetile table"]);
 		}
+		
+
 }
-	 
+
 function sharetiles(){
 	global $mysqli;
 	$sql = 'call update_sharetile';
@@ -84,14 +86,28 @@ function read_status(){
 	return ($status);
 }
 
-function setResult($id){
-        /* global $mysqli;
+function checkResult($player){
+	 	global $mysqli; 
+		$sql='select count(DISTINCT player_name) as c from sharetile';
+		$st = $mysqli->prepare($sql);
+		$st->execute() ;
+		$res= $st->get_result();
+		if(['c']==1){
+			$sql="call check_result('?')";
+        	$st = $mysqli->prepare($sql);
+        	$st->bind_param('s',$player);
+        	$st->execute() ;
+
+			$sql='select name from players where result="win" ';
+        	$st1 = $mysqli->prepare($sql);
+        	//$st1->bind_param('s',$player);
+        	$st1->execute() ;
+			header('Content-type: application/json');
+			print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+			//return($player);
+		}
+
         
-        $p_turn=null;       
-        $sql='update gameStatus set status="ended", result=?, p_turn=?';
-        $st = $mysqli->prepare($sql);
-        $st->bind_param('ss',$id,$p_turn);
-        $st->execute() */;
     }
 /* function check_abort() {
 	global $mysqli;

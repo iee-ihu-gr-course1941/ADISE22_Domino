@@ -20,6 +20,7 @@ CREATE DATABASE IF NOT EXISTS `lousi` /*!40100 DEFAULT CHARACTER SET utf8mb4 COL
 USE `lousi`;
 
 -- Dumping structure for πίνακας lousi.board
+DROP TABLE IF EXISTS `board`;
 CREATE TABLE IF NOT EXISTS `board` (
   `bid` enum('1','2') NOT NULL,
   `btile` varchar(10) DEFAULT NULL,
@@ -33,6 +34,7 @@ INSERT INTO `board` (`bid`) VALUES
 	('2');
 
 -- Dumping structure for πίνακας lousi.board_empty
+DROP TABLE IF EXISTS `boart_empty`;
 CREATE TABLE IF NOT EXISTS `board_empty` (
   `bid` enum('1','2') NOT NULL,
   `btile` varchar(10) DEFAULT NULL,
@@ -43,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `board_empty` (
 -- Dumping data for table lousi.board_empty: ~0 rows (approximately)
 #DROP PROCEDURE cleanboard ;
 -- Dumping structure for procedure lousi.cleanboard
+DROP PROCEDURE IF EXISTS `cleanboard`;
 DELIMITER //
 CREATE PROCEDURE `cleanboard`()
 BEGIN
@@ -83,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   `name` varchar(10) NOT NULL,
   `token` varchar(100) DEFAULT NULL,
   `last_action` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `result` varchar (11) DEFAULT NULL, 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
 
@@ -102,6 +106,7 @@ select * from gamestatus;
 INSERT INTO players(name) values ('vasilis2');
 playersUPDATE players set token=md5(CONCAT('vasilis', NOW()))
 where name=vasilis;
+select * from players;
 
 select * from players;
 */
@@ -113,8 +118,9 @@ DROP PROCEDURE IF EXISTS `play_tile`;
 DELIMITER //
 CREATE PROCEDURE `play_tile` (IN ptile_name VARCHAR(15), IN p_id INT)
 BEGIN
+
 DECLARE cnt INT;
-	SELECT COUNT(*) INTO cnt FROM sharetile WHERE tile_name=ptile_name;
+	SELECT COUNT(*) as cnt FROM sharetile WHERE tile_name=ptile_name;
 	IF cnt = 0 THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tile does not exist in sharetile table';
 	ELSE 
@@ -123,9 +129,7 @@ DECLARE cnt INT;
 		  btile=ptile_name
 		  #last_change = NOW()
 	  	where bid=p_id;
-	  	
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
-	  	
 	  	UPDATE gamestatus
 	  	SET  p_turn=if(p_id='1','2','1'),
 	  		status='started'
@@ -135,7 +139,7 @@ DECLARE cnt INT;
 END //
 DELIMITER ;
 #update game_status set p_turn=if(p_color='W','B','W');
-/*#CALL play_tile('6-6', '2');
+/*#CALL play_tile('0-6', '1');
 select * from players;
 	select * from board;
 	select * from players;
@@ -149,7 +153,7 @@ select * from players;
 */
 
 -- Dumping structure for πίνακας lousi.sharetile
-DROP TABLE IF EXISTS sharetile;
+DROP TABLE IF EXISTS `sharetile`;
 CREATE TABLE IF NOT EXISTS `sharetile` (
   `id` int(11) NOT NULL,
   `tile_name` varchar(15) DEFAULT NULL,
@@ -160,6 +164,7 @@ CREATE TABLE IF NOT EXISTS `sharetile` (
 -- Dumping data for table lousi.sharetile: ~0 rows (approximately)
 
 -- Dumping structure for πίνακας lousi.tile
+DROP TABLE IF EXISTS `tile`;
 CREATE TABLE IF NOT EXISTS `tile` (
   `tilename` varchar(15) NOT NULL,
   `firstvalue` int(11) NOT NULL,
@@ -199,6 +204,7 @@ INSERT INTO `tile` (`tilename`, `firstvalue`, `secondvalue`) VALUES
 	('6-6', 6, 6);
 
 -- Dumping structure for procedure lousi.tile_shuffle
+DROP PROCEDURE IF EXISTS `tile_shuffle`;
 DELIMITER //
 CREATE PROCEDURE `tile_shuffle`()
 BEGIN
@@ -210,6 +216,7 @@ BEGIN
 DELIMITER ;
 
 -- Dumping structure for procedure lousi.update_sharetile
+DROP PROCEDURE IF EXISTS `update_sharetile`;
 DELIMITER //
 CREATE PROCEDURE `update_sharetile`()
 BEGIN
@@ -254,12 +261,44 @@ BEGIN
 END//
 DELIMITER ;
 
-/*
+
+
+DROP PROCEDURE IF EXISTS `check_result`;
+DELIMITER //
+CREATE PROCEDURE check_result (IN player_name VARCHAR(10))
+	BEGIN
+    	UPDATE players
+    	SET result = 'win'
+    	WHERE name NOT IN (SELECT player_name FROM sharetile);
+	END //
+DELIMITER ;
 	
+	
+	
+	
+
+/*
+	SELECT * FROM sharetile;
+	
+	CALL check_result('aggelos');
+	select * from board;
 	call update_sharetile;
+	select count(DISTINCT player_name) from sharetile;
+	an ayto einai 1 tote  update players set result=1 where  name is not exist on table sharetile;
+	create procudeure 
+	UPDATE players
+	SET result = 'win'
+	WHERE name NOT IN (SELECT player_name FROM sharetile);
+	select count(*) from sharetile where player_name='dasasas' is null;
+	
+	
+	Delete from sharetile where player_name='aggelos';
 	select * from sharetile;
+	select * from players;
 	
 */
+
+
 
 
 
