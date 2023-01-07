@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` enum('initialized','started','ended','aborted') NOT NULL DEFAULT 'initialized',
   `p_turn` enum('1','2') DEFAULT NULL,
-  `result` enum('1','2') DEFAULT NULL,
+  #`result` enum('1','2') DEFAULT NULL,
   `last_change` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
@@ -135,6 +135,21 @@ BEGIN
 	  	SET  p_turn=if(p_id='1','2','1'),
 	  		status='started'
 	  	WHERE id=1;
+	  	
+	  	
+	  	/*UPDATE gamestatus
+		SET p_turn =
+  			CASE p_id
+    			WHEN 1 THEN '2'
+    			WHEN 2 THEN '3'
+    			WHEN 3 THEN '4'
+    			ELSE '1'
+  			END,
+  		status='started'
+		WHERE id=1;*/
+	  	
+	  	
+	  	
   	END IF;
   	
 END //
@@ -299,16 +314,22 @@ BEGIN
 END//
 DELIMITER ;
 
-
-
 DROP PROCEDURE IF EXISTS `check_result`;
 DELIMITER //
-CREATE PROCEDURE check_result (IN player_name VARCHAR(10))
-	BEGIN
-    	UPDATE players
-    	SET result = 'win'
-    	WHERE name NOT IN (SELECT player_name FROM sharetile);
-	END //
+CREATE PROCEDURE `check_result` (IN player_name VARCHAR(10))
+BEGIN
+	DECLARE res VARCHAR(10);
+    UPDATE players
+    SET result = 'win'
+    WHERE name NOT IN (SELECT player_name FROM sharetile);
+    
+    SELECT result FROM players INTO res;
+    
+    IF res='win' Then
+    	UPDATE gamestatus
+    		SET status='end';
+    END if;
+END //
 DELIMITER ;
 	
 	
@@ -317,7 +338,7 @@ DELIMITER ;
 
 /*
 	SELECT * FROM sharetile;
-	
+	select * from gamestatus;
 	CALL check_result('aggelos');
 	select * from board;
 	call update_sharetile;

@@ -65,6 +65,8 @@ function set_user($input) {
 
 	update_gameStatus();
 }
+
+
 function show_sharedtiles(){
 	global $mysqli;
 	$sql = 'select * from sharetile';
@@ -103,56 +105,5 @@ function current_player($token) {
 }
 
 
-//Σχεδον τελος με τους Players just checking 
-
-
-
-
-//check_abort();
-	 
-	/*$status = read_status();
-	if($status['status']=='started') {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"Game is in action."]);
-		exit;
-	}
-	if($status['status']=='aborded'||$status['status']=='ended'){
-		$sql = 'call cleanboard()';
-	    $mysqli->query($sql);
-	} */
-	
-	/*
-	$sql = 'update players set name=?, token=md5(CONCAT( ?, NOW()))  where id=?';
-	$st2 = $mysqli->prepare($sql);
-	$st2->bind_param('sss',$name,$name,$b);
-	$st2->execute();
-	update_game_status();
-	$sql = 'select * from players where id=?';
-	$st = $mysqli->prepare($sql);
-	$st->bind_param('s',$b);
-	$st->execute();
-	$res = $st->get_result();
-	header('Content-type: application/json');
-	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
-	*/ 
-
-
-
-/*
-function handle_user($method, $b,$input) {
-	if($method=='GET') {
-		show_user($b);
-	} else if($method=='PUT') {
-        set_user($b,$input);
-    }
-}
-*/
-//update_game_status();
-	//$sql = 'select * from players where id=?';
-	//$st = $mysqli->prepare($sql);
-	//$st->bind_param('i',$id);
-	//$st->execute();
-	//$res = $st->get_result();
-	//header('Content-type: application/json');
-	//print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT); 
+//Σχεδον τελος με τους Players just checking //
 ?>

@@ -1,5 +1,5 @@
 var me={token:null,id:null,username:null};
-var game_status={};
+var game_status={status:null};
 //var board={};
 var last_update=new Date().getTime();
 var timer=null;
@@ -12,6 +12,7 @@ $(function(){
 	drawBoard('board2');
 	//$('#gamelogin').click(login_to_game);
 	$('#gamelogin').click( login_to_game);
+	$('#playbutton').click(play_tile);
 	
 });
 
@@ -27,6 +28,21 @@ function drawBoard(canvasId) {
     ctx.fillRect(50, 50, 300, 300);
   }
 
+  function play_tile(tilename,playername){
+	if($('#tile').val()=="" & $('#playername').val()==""){
+		alert('You have to set a tile and player name');
+			return;
+	}
+	$.ajax({url: "domino.php/play", 
+					method: 'PUT',
+					dataType: "json".stringify({tilename,playername}),
+					contentType: 'application/json',
+					data: JSON.stringify( {tile: $('#tile').val(),playername: $('#playername')}),
+					success: game_status_update}
+		
+	);
+  }
+
 
 function login_to_game() {
 	if($('#name').val()=='') {
@@ -40,14 +56,20 @@ function login_to_game() {
 			contentType: 'application/json',
 			data: JSON.stringify( {name: $('#name').val()}),
 			success: login_result,
-			error: login_error});
+			error: result_error});
 }
 
-function filltiles(){
-	$.ajax({url:"domino.php/tiles",
-			headers:{"X-Token": me.token},
-			success: fill_tiles});
+function result_error() {
+	var x = data.responseJSON;
+	alert(x.errormesg);
 }
+
+ function sharetiles(){
+	$.ajax({url:"domino.php/stiles",
+			method: 'PUT',
+			headers:{"X-Token": me.token},
+			success: gaetSharedtilesbyplayer});
+} 
 
 
 function login_result(data) {
@@ -62,10 +84,89 @@ function login_error(data,y,z,c) {
 }
 
 function game_status_update() {
-	
 	clearTimeout(timer);
-	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": me.token} });
+	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": data.token} });
 }
+
+function gaetSharedtilesbyplayer(){
+	$.ajax({url:"domino.php/stiles",
+		method: 'GET',
+		headers:{"X-Token": me.token},
+		success: showplayershand});
+}
+
+function showplayershand(data){
+	$('#tabletiles  tr td').html("");
+	for(var i=0;i<data.length;i++) {
+		var o = data[i];
+		var id = '#td_'+ o;
+		//var im = '<img '+'" src="images/pieces/'+o.id+'.png">';
+		//$(id).html(im);
+	}
+
+}
+
+
+
+function update_status(data){
+	game_status=data[0];
+	if((game_status.status=="initialized"||game_status.status==="started")){
+		if(me[0].id==1){
+			update_username1(me);
+		}else if(me[0].id==2){
+			update_username2(me);
+		}
+	}
+
+	if( game_status.status==="started"){
+		opponentUsername();
+	}
+		
+	if(game_status.p_turn==me.id && me.id!==null ){
+		$('#play_div').show(1000);
+		setTimeout(function(){game_status_update();}, 15000);
+	}else{
+		$('#play_div').hide(1000);
+		setTimeout(function(){game_status_update();}, 15000);
+	}
+
+	if(game_status.stauts==ended && me.result=='win'){
+		$('#player1wait').hide();
+		$('#player2wait').hide();
+		if(game_status.result=='win'){
+			$('#player1-message').text("The winner is " + me.name[0]);
+			$('#player2-message').text("The winner is " + me.name[0]);
+		}
+		setTimeout(()=>{alert('The game is over')},3500)
+		clearTimeout(timer);
+		me=[{token:null,id:null,username:null}];
+		game_status={status:null,selected_piece:null,last_change:null};
+		timer=null;
+		setTimeout(reset_board, 35000);
+		return;
+			}
+	
+}
+
+function fill_board() {
+	$.ajax({url: "api.php/board/", 
+		success: fill_board_by_data });
+}
+
+function fill_board_by_data(){
+	for(var i=0; i<data.length; i++){
+
+	}
+}
+
+function reset_board() {
+	$.ajax({url: "api.php/board/", 
+	 method: 'POST'});
+	window.location.hash="index";
+}
+
+	
+
 
 function update_username1(data){
 	$('#player1').text(data[0].name);
