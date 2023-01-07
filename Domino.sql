@@ -116,19 +116,20 @@ select * from players;
 -- Dumping structure for procedure lousi.play_tile
 DROP PROCEDURE IF EXISTS `play_tile`;
 DELIMITER //
-CREATE PROCEDURE `play_tile` (IN ptile_name VARCHAR(15), IN p_id INT)
+CREATE PROCEDURE `play_tile` (IN ptile_name VARCHAR(15), IN p_name VARCHAR(15))
 BEGIN
-
-DECLARE cnt INT;
-	SELECT COUNT(*) as cnt FROM sharetile WHERE tile_name=ptile_name;
+  DECLARE cnt INT;
+  DECLARE p_id INT;
+  SELECT id  INTO p_ID from players where name=p_name;
+	SELECT COUNT(*) INTO cnt FROM sharetile WHERE tile_name=ptile_name and p_name=player_name;
 	IF cnt = 0 THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tile does not exist in sharetile table';
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You Dont have this tile.';
 	ELSE 
 		UPDATE board
 	  	SET
 		  btile=ptile_name
 		  #last_change = NOW()
-	  	where bid=p_id;
+	  	WHERE bid=p_id;
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	UPDATE gamestatus
 	  	SET  p_turn=if(p_id='1','2','1'),
@@ -138,10 +139,45 @@ DECLARE cnt INT;
   	
 END //
 DELIMITER ;
+
+/*
+
+DROP PROCEDURE IF EXISTS `play_tile`;
+DELIMITER //
+CREATE PROCEDURE `play_tile` (IN ptile_name VARCHAR(15), IN p_name VARCHAR(15))
+BEGIN
+  DECLARE cnt INT;
+  DECLARE p_id INT;
+  SELECT id  INTO p_ID from players where name=p_name;
+	SELECT COUNT(*) INTO cnt FROM sharetile WHERE tile_name=ptile_name and p_name=player_name;
+	IF cnt = 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tile does not exist in sharetile table';
+	ELSE 
+		UPDATE board
+	  	SET
+		  btile=ptile_name
+		  #last_change = NOW()
+	  	WHERE bid=p_id;
+	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
+	  	UPDATE gamestatus
+	  	SET  p_turn=if(p_id='1','2','1'),
+	  		status='started'
+	  	WHERE id=1;
+  	END IF;
+  	
+END //
+DELIMITER ;
+
+SELECT SUBSTRING_INDEX(btile, '-', -1)
+FROM board
+WHERE bid = 2;
+
+*/
 #update game_status set p_turn=if(p_color='W','B','W');
-/*#CALL play_tile('0-6', '1');
+/*#CALL play_tile('3-6', 'aggelos2');
 select * from players;
 	select * from board;
+	update board set btile='1-3' where bid='2'
 	select * from players;
 	select * from gamestatus;
 	call cleanboard();
@@ -150,6 +186,8 @@ select * from players;
 	select count(*) as c from sharetile where tile_name='0-1'
 	SELECT * FROM sharetile WHERE tile_name LIKE '%1%';
 	SELECT * FROM board WHERE bid IN (1, 2) AND btile IS NULL;
+	SELECT SUBSTRING_INDEX('2-1-1', '-', 1) as part1,
+       SUBSTRING_INDEX('2-1-1', '-', -1) as part2;
 */
 
 -- Dumping structure for πίνακας lousi.sharetile

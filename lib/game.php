@@ -6,26 +6,98 @@
 
 function play_tile($tilename,$player){
 	global $mysqli;
-	$sql = 'select count(*) as c from sharetile where tile_name=?';
-	$st1 = $mysqli->prepare($sql);
-	$st1->bind_param('s',$tilename);
-	$st1->execute();
-	$res2 = $st1->get_result();
-	$tilehand = $res2 -> fetch_assoc();
-	if ($tilehand['c']==0){
+	//$sql = 'select count(*) as c from sharetile where tile_name=? and p_name=?';
+	//$st1 = $mysqli->prepare($sql);
+	//$st1->bind_param('ss',$tilename,$player);
+	//$st1->execute();
+	//$res2 = $st1->get_result();
+	//$tilehand = $res2 -> fetch_assoc();
+	//if ($tilehand['c']==1){
 		$sql = "call play_tile(?,?)";
-		$st = $mysqli->prepare($sql);
-		$st->bind_param('si', $tilename, $player);
-		$st->execute();
-		$res = $st->get_result();
-	}else{
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"Tile does not exist in sharetile table"]);
-		}
-		
-
+		$st1 = $mysqli->prepare($sql);
+		$st1->bind_param('ss',$tilename,$player);
+		$st1->execute();
+		$res = $st1->get_result();
+	//}else{
+	//	header("HTTP/1.1 400 Bad Request");
+		//print json_encode(['errormesg'=>"Tile does not exist in sharetile table"]);
+		//}
 }
 
+/*  function check_playtile ($tilename){
+	global $mysqli;
+	$sql='SELECT SUBSTRING_INDEX(?, '-', 1) INTO part1'
+	$st=$mysqli->prepare($sql);
+	$st->bind_param('s',$tilename);
+	$st->execute();
+	$res= $st->get_result();
+	$res->fetch_assoc();
+	$firstvalue=$res;
+
+	$sql='SELECT SUBSTRING_INDEX(?, '-', -1) INTO part2'
+	$st2=$mysqli->prepare($sql);
+	$st2->bind_param('s',$tilename);
+	$st2->execute();
+	$res2= $st2->get_result();
+	$res2->fetch_assoc();
+	$secondvalue=$res2;
+
+	$sql='SELECT SUBSTRING_INDEX(btile, '-', 1) FROM board WHERE bid = 1';
+	$st3=$mysqli->prepare($sql);
+	//$st3->bind_param('s',$tilename);
+	$st3->execute();
+	$res3= $st3->get_result();
+	$res3->fetch_assoc();
+	$oldfirstvalue=$res3;
+
+	$sql='SELECT SUBSTRING_INDEX(btile, '-', -1) FROM board WHERE bid=1';
+	$st4=$mysqli->prepare($sql);
+	//$st4->bind_param('s',$tilename);
+	$st4->execute();
+	$res4= $st4->get_result();
+	$res4->fetch_assoc();
+	$oldsecondvalue=$res4;
+
+	$sql='SELECT SUBSTRING_INDEX(btile, '-', 1) FROM board WHERE bid=2'
+	$st5=$mysqli->prepare($sql);
+	//$st3->bind_param('s',$tilename);
+	$st5->execute();
+	$res5= $st5->get_result();
+	$res5->fetch_assoc();
+	$oldfirstvaluesecboard=$res5;
+
+	$sql='SELECT SUBSTRING_INDEX(btile, '-', -1) FROM board WHERE bid = 2'
+	$st6=$mysqli->prepare($sql);
+	//$st4->bind_param('s',$tilename);
+	$st6->execute();
+	$res6= $st6->get_result();
+	$res6->fetch_assoc();
+	$oldsecondvaluesecboard=$res6;
+	if ($firstvalue==$oldfirstvalue){
+		play_tile();
+	} elseif($firstvalue==$oldsecondvalue){
+		play_tile();
+	}elseif ($firstvalue==$oldfirstvaluesecboard){
+		play_tile();
+	}elseif($firstvalue==$oldsecondvaluesecboard){
+		play_tile();
+	}elseif($secondvalue==$oldfirstvalue){
+		play_tile();
+	}elseif ($secondvalue==$oldsecondvalue){
+		play_tile();
+	}elseif($secondvalue==$oldfirstvaluesecboard){
+		play_tile();
+	}elseif($secondvalue==$oldsecondvaluesecboard){
+		play_tile();
+	}else{
+		header("HTTP/1.1 400 Bad Request");
+		print json_encode(['errormesg'=>"Tile does not match"]);
+		
+	}
+
+
+} 
+ */
 function sharetiles(){
 	global $mysqli;
 	$sql = 'call update_sharetile';
