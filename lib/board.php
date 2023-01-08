@@ -28,6 +28,8 @@ function check_abort() {
 	$sql = "CALL check_aboard()";
 	$st = $mysqli->prepare($sql);
 	$st->execute();
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(), JSON_PRETTY_PRINT);
 	
 }  
 
