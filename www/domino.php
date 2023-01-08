@@ -26,7 +26,7 @@ if(isset($_SERVER['HTTP_X_TOKEN'])) {
 switch($r=array_shift($request)){
     case'players': handle_player($method,$request,$input);
         break;
-    case'status':show_status($method,$request,$input);
+    case'status':handle_status($method,$request,$input);
         break;
     case'board':handle_board($method,$request,$input);
         break;
@@ -34,10 +34,23 @@ switch($r=array_shift($request)){
         break;
     case'play':handle_game($method,$tilename,$player,$request,$input);
         break;
+    case'abort':handle_abort($method,$request,$input);
+        break;
+    case 'draw':handle_draw($method,$player,$request,$input)
     default :header("HTTP/1.1 404 NOT Found");
         exit;
      
 
+}
+
+
+function handle_draw($method,$player,$input){
+    if($method=='PUT'){
+          drawtile()($tilename,$player);
+      }else{
+            header("HTTP/1.1 400 Bad Request");
+            print json_encode(['errormesg'=>"Method $method not allowed here."]);
+  }
 }
 
 function handle_game($method,$tilename,$player,$input){
@@ -47,7 +60,10 @@ function handle_game($method,$tilename,$player,$input){
         show_board();
     }elseif($method=='PUT'){
         play_tile($tilename,$player);
-    }
+    }else{
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"Method $method not allowed here."]);
+}
 }
 
 
@@ -93,9 +109,19 @@ function handle_player($method, $p,$input) {
 function handle_status($method) {
     if($method=='GET') {
         show_status();
-    } else {
-        header('HTTP/1.1 405 Method Not Allowed');
-    }
+    } else{
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"Method $method not allowed here."]);
+}
+}
+
+function handle_abort($method){
+    if($method=='GET') {
+        check_abort();
+    } else{
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"Method $method not allowed here."]);
+}
 }
 
 

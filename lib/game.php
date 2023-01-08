@@ -106,6 +106,18 @@ function sharetiles(){
 	//print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
+
+function drawtile($player){
+	global $mysqli;
+	$sql='call draw_tile(?)'
+	$st=$mysqli->prepare($sql);
+	$st->bind_param('s',$player);
+	$st->execute();
+	$res= $st->get_result();
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
 function show_status(){
 	
 	global $mysqli;
@@ -116,6 +128,7 @@ function show_status(){
 	$res = $st->get_result();
 	header('Content-type: application/json');
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+	check_abort();
 
 }
 
@@ -145,17 +158,6 @@ function update_gameStatus() {
 		
 }
 
-
-function read_status(){
-	global $mysqli;
-	$sql = 'select * from gamestatus';
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	$res = $st->get_result();
-	$status = $res->fetch_assoc();
-	return ($status);
-}
-
 function checkResult($player){
 	 	global $mysqli; 
 		$sql='select count(DISTINCT player_name) as c from sharetile';
@@ -176,7 +178,7 @@ function checkResult($player){
 			print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 			//return($player);
 			
-			//reset_board();
+			reset_board();
 			
 		}
 

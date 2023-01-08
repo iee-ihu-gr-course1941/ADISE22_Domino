@@ -23,6 +23,15 @@ function show_board(){
 
 
 
+function check_abort() {
+	global $mysqli;
+	$sql = "CALL check_aboard()";
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	
+}  
+
+
 
 
 

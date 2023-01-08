@@ -13,6 +13,8 @@ $(function(){
 	//$('#gamelogin').click(login_to_game);
 	$('#gamelogin').click( login_to_game);
 	$('#playbutton').click(play_tile);
+	$('#drawbutton').click(draw_tile);
+
 	
 });
 
@@ -28,7 +30,7 @@ function drawBoard(canvasId) {
     ctx.fillRect(50, 50, 300, 300);
   }
 
-  function play_tile(tilename,playername){
+function play_tile(tilename,playername){
 	if($('#tile').val()=="" & $('#playername').val()==""){
 		alert('You have to set a tile and player name');
 			return;
@@ -68,7 +70,7 @@ function result_error() {
 	$.ajax({url:"domino.php/stiles",
 			method: 'PUT',
 			headers:{"X-Token": me.token},
-			success: gaet_Shared_tiles_by_player});
+			success: get_Shared_tiles_by_player});
 } 
 
 
@@ -89,11 +91,18 @@ function game_status_update() {
 	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": data.token} });
 }
 
-function gaet_Shared_tiles_by_player(){
+function get_Shared_tiles_by_player(){
 	$.ajax({url:"domino.php/stiles/?",
 		method: 'GET',
 		headers:{"X-Token": me.token},
 		success: showplayershand});
+}
+
+function draw_tile(){
+	$.ajax({url:"domino.php/draw",
+	method: 'PUT',
+	headers:{"X-Token": me.username},
+	success: get_Shared_tiles_by_player});
 }
 
 function showplayershand(data){
@@ -109,9 +118,8 @@ function showplayershand(data){
 
 
 function check_aboart(){
-	$.ajax({url:"domino.php/stiles/?",
-		method: 'GET',
-		headers:{"X-Token": me.token}
+	$.ajax({url:"domino.php/abort",
+		method: 'GET'
 		//,success: update_status//
 	});
 }
@@ -181,9 +189,13 @@ function fill_board() {
 		success: fill_board_by_data });
 }
 
-function fill_board_by_data(){
-	for(var i=0; i<data.length; i++){
-
+function fill_board_by_data(data){
+	$('#board').html("");
+	for(var i=0;i<length;i++) {
+		var o = data[i];
+		var id = '#board_'+ o;
+		//var im = '<img '+'" src="images/pieces/'+o.id+'.png">';
+		//$(id).html(im);
 	}
 }
 
