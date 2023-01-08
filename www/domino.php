@@ -47,7 +47,7 @@ switch($r=array_shift($request)){
 
 function handle_draw($method,$player,$input){
     if($method=='PUT'){
-          drawtile()($tilename,$player);
+          drawtile($player);
       }else{
             header("HTTP/1.1 400 Bad Request");
             print json_encode(['errormesg'=>"Method $method not allowed here."]);
@@ -60,7 +60,7 @@ function handle_game($method,$tilename,$player,$input){
     if($method=='GET') {
         show_board();
     }elseif($method=='PUT'){
-        play_tile($tilename,$player);
+        play_tile($input);
     }else{
         header("HTTP/1.1 400 Bad Request");
         print json_encode(['errormesg'=>"Method $method not allowed here."]);

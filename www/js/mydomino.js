@@ -136,21 +136,12 @@ function update_status(data){
 		}
 	}
 
-	if( game_status.status==="started"){
+	if( game_status.status=="started"){
 		$('#player1wait').hide();
 		$('#player2wait').hide();
 		opponentUsername();
 		sharetiles();
 		check_aboart();
-		if(game_status.status=='aboard'){
-				setTimeout(()=>{alert('The game is over')},3500)
-				clearTimeout(timer);
-				me=[{token:null,id:null,username:null}];
-				game_status={status:null,selected_piece:null,last_change:null};
-				timer=null;
-				setTimeout(reset_board, 35000);
-				return;
-		}
 		if(game_status.p_turn==me.id && me.id!==null ){
 			$('#play_div').show(1000);
 			setTimeout(function(){game_status_update();}, 15000);
@@ -174,6 +165,15 @@ function update_status(data){
 			setTimeout(reset_board, 35000);
 			return;
 				}
+	if(game_status.status=='aboard'){
+		setTimeout(()=>{alert('The game is over')},3500)
+		clearTimeout(timer);
+		me=[{token:null,id:null,username:null}];
+		game_status={status:null,selected_piece:null,last_change:null};
+		timer=null;
+		setTimeout(reset_board, 3500);
+		return;
+			}
 	
 	
 	
