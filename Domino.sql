@@ -189,7 +189,7 @@ WHERE bid = 2;
 
 */
 #update game_status set p_turn=if(p_color='W','B','W');
-/*#CALL play_tile('3-6', 'aggelos2');
+/*#CALL play_tile('3-6', 'agrgkkkelj');
 select * from players;
 	select * from board;
 	update board set btile='1-3' where bid='2'
@@ -276,7 +276,7 @@ BEGIN
  	DECLARE counter INT;
   	SET counter=0;
   	
-	#CALL tile_shuffle();
+	CALL tile_shuffle();
   
   	while (counter<28) DO
   		#Βαζουμε id οτι ειναι και το counter πχ.αν counter=1 insert 1 
@@ -303,7 +303,7 @@ BEGIN
     					FROM players
   				)p
   			WHERE p.row_num % (SELECT COUNT(*) FROM players) = t.id % (SELECT COUNT(*) FROM players)
-		);
+		)LIMIT 14; 
 		SET counter = counter + 1;
   	END WHILE;
     /*
@@ -346,17 +346,33 @@ IF cnt=1 then
 	END if;
 END //
 DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `draw_tile`;
+DELIMITER //
+CREATE PROCEDURE `draw_tile` (IN player_name VARCHAR(10))
+BEGIN
+    UPDATE sharetile t
+    SET t.player_name = player_name
+    WHERE t.player_name IS NULL Order by Rand() LIMIT 1; 
+END //
+DELIMITER ;
 	
 	#CALL check_aboard();
 	
 	
 
 /*
-	SELECT * FROM sharetile;
+	SELECT Count(*) FROM sharetile;
 	select * from gamestatus;
 	CALL check_result('aggelos');
 	select * from board;
+	call tile_shuffle();
+	select Count(*) from sharetile where player_name is not null;
+	call update_sharetile();
+	call draw_tile('agrgkkkelj');
 	call update_sharetile;
+	CALL play_tile('2-6', 'agrgkkkelj');
 	select count(DISTINCT player_name) from sharetile;
 	an ayto einai 1 tote  update players set result=1 where  name is not exist on table sharetile;
 	create procudeure 
@@ -366,7 +382,7 @@ DELIMITER ;
 	select count(*) from sharetile where player_name='dasasas' is null;
 	
 	
-	
+	select * from tile;
 	Delete from sharetile where player_name='aggelos';
 	select * from sharetile;
 	select * from players;

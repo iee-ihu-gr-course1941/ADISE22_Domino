@@ -98,7 +98,7 @@ function gaet_Shared_tiles_by_player(){
 
 function showplayershand(data){
 	$('#tabletiles  tr td').html("");
-	for(var i=0;i<data.length;i++) {
+	for(var i=0;i<7;i++) {
 		var o = data[i];
 		var id = '#td_'+ o;
 		//var im = '<img '+'" src="images/pieces/'+o.id+'.png">';
@@ -134,6 +134,15 @@ function update_status(data){
 		opponentUsername();
 		sharetiles();
 		check_aboart();
+		if(game_status.status=='aboard'){
+				setTimeout(()=>{alert('The game is over')},3500)
+				clearTimeout(timer);
+				me=[{token:null,id:null,username:null}];
+				game_status={status:null,selected_piece:null,last_change:null};
+				timer=null;
+				setTimeout(reset_board, 35000);
+				return;
+		}
 		if(game_status.p_turn==me.id && me.id!==null ){
 			$('#play_div').show(1000);
 			setTimeout(function(){game_status_update();}, 15000);
