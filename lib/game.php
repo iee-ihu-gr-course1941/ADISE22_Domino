@@ -109,7 +109,7 @@ function sharetiles(){
 
 function drawtile($player){
 	global $mysqli;
-	$sql='call draw_tile(?)'
+	$sql='call draw_tile(?)';
 	$st=$mysqli->prepare($sql);
 	$st->bind_param('s',$player);
 	$st->execute();

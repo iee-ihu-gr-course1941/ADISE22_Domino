@@ -36,7 +36,8 @@ switch($r=array_shift($request)){
         break;
     case'abort':handle_abort($method,$request,$input);
         break;
-    case 'draw':handle_draw($method,$player,$request,$input)
+    case 'draw':handle_draw($method,$player,$request,$input);
+        break;
     default :header("HTTP/1.1 404 NOT Found");
         exit;
      
