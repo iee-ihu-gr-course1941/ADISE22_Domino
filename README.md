@@ -220,6 +220,6 @@ gamestatus
 
 ## Authors
 
-    ΛΟΥΣΙ ΑΝΤΖΕΛΟ 
+    ΛΟΥΣΙ ΑΝΤΖΕΛΟ 144347
     ADISE22_DOMINO
 
