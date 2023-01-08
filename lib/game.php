@@ -175,18 +175,14 @@ function checkResult($player){
 			header('Content-type: application/json');
 			print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 			//return($player);
+			
+			//reset_board();
+			
 		}
 
         
     }
-/* function check_abort() {
-	global $mysqli;
-	
-	$sql = "update gamestatus set status='aborded',result=if(p_turn='1','2','1'), p_turn=null where p_turn is not null and last_change<(now()-INTERVAL 10 MINUTE) and status='started'";
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	
-}  */
+
 /*it needed check again for sure*/
 
 ?>

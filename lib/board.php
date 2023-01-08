@@ -5,12 +5,10 @@ require_once "../lib/dbconnection.php";
 
 /*its not completed for susre*/
 
-function reset_board(){
+function reset_board() {
 	global $mysqli;
-
 	$sql = 'call cleanboard()';
 	$mysqli->query($sql);
-	show_board();
 }
 
 function show_board(){

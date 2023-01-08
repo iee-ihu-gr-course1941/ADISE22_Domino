@@ -53,14 +53,14 @@ BEGIN
 	CREATE TABLE board SELECT * FROM board_empty;
 	 		/*set tile=null, last_change=null;*/
   			/*update `pieces` set `is_available`=1 Where `is_available`=0; it had not completed*/
-  		update `gamestatus` set `status`='not active', `p_turn`=null, `result`=null,  `last_change` =null;
+  		update `gamestatus` set `status`='not active', `p_turn`=null,  `last_change` =null;
   		INSERT INTO `board` (`bid`) VALUES
 			('1'),
 			('2');
 
 END//
 DELIMITER ;
-
+#CALL cleanboard();
 #SELECT * FROM board;
 
 
@@ -276,7 +276,7 @@ BEGIN
  	DECLARE counter INT;
   	SET counter=0;
   	
-	CALL tile_shuffle();
+	#CALL tile_shuffle();
   
   	while (counter<28) DO
   		#Βαζουμε id οτι ειναι και το counter πχ.αν counter=1 insert 1 
@@ -331,8 +331,23 @@ BEGIN
     END if;
 END //
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `check_aboard`;
+DELIMITER //
+CREATE PROCEDURE `check_aboard` ()
+BEGIN
+	DECLARE cnt INT;
+   SELECT COUNT(*) INTO cnt FROM board
+     WHERE  btile is not null and last_change<(now()-INTERVAL 10 MINUTE);
+IF cnt=1 then 
+	update gamestatus 
+	set status='aborded',
+	p_turn=NULL;
+	END if;
+END //
+DELIMITER ;
 	
-	
+	#CALL check_aboard();
 	
 	
 
@@ -349,6 +364,7 @@ DELIMITER ;
 	SET result = 'win'
 	WHERE name NOT IN (SELECT player_name FROM sharetile);
 	select count(*) from sharetile where player_name='dasasas' is null;
+	
 	
 	
 	Delete from sharetile where player_name='aggelos';

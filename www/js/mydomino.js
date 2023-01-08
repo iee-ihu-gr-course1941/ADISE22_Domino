@@ -1,6 +1,6 @@
 var me={token:null,id:null,username:null};
 var game_status={status:null};
-//var board={};
+var board={};
 var last_update=new Date().getTime();
 var timer=null;
 
@@ -68,7 +68,7 @@ function result_error() {
 	$.ajax({url:"domino.php/stiles",
 			method: 'PUT',
 			headers:{"X-Token": me.token},
-			success: gaetSharedtilesbyplayer});
+			success: gaet_Shared_tiles_by_player});
 } 
 
 
@@ -76,6 +76,7 @@ function login_result(data) {
 	me = data;
 	window.location.hash="play";
 	game_status_update();
+	
 }
 
 function login_error(data,y,z,c) {
@@ -88,8 +89,8 @@ function game_status_update() {
 	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": data.token} });
 }
 
-function gaetSharedtilesbyplayer(){
-	$.ajax({url:"domino.php/stiles",
+function gaet_Shared_tiles_by_player(){
+	$.ajax({url:"domino.php/stiles/?",
 		method: 'GET',
 		headers:{"X-Token": me.token},
 		success: showplayershand});
@@ -107,6 +108,15 @@ function showplayershand(data){
 }
 
 
+function check_aboart(){
+	$.ajax({url:"domino.php/stiles/?",
+		method: 'GET',
+		headers:{"X-Token": me.token}
+		//,success: update_status//
+	});
+}
+
+
 
 function update_status(data){
 	game_status=data[0];
@@ -119,37 +129,46 @@ function update_status(data){
 	}
 
 	if( game_status.status==="started"){
-		opponentUsername();
-	}
-		
-	if(game_status.p_turn==me.id && me.id!==null ){
-		$('#play_div').show(1000);
-		setTimeout(function(){game_status_update();}, 15000);
-	}else{
-		$('#play_div').hide(1000);
-		setTimeout(function(){game_status_update();}, 15000);
-	}
-
-	if(game_status.stauts==ended && me.result=='win'){
 		$('#player1wait').hide();
 		$('#player2wait').hide();
-		if(game_status.result=='win'){
-			$('#player1-message').text("The winner is " + me.name[0]);
-			$('#player2-message').text("The winner is " + me.name[0]);
+		opponentUsername();
+		sharetiles();
+		check_aboart();
+		if(game_status.p_turn==me.id && me.id!==null ){
+			$('#play_div').show(1000);
+			setTimeout(function(){game_status_update();}, 15000);
+		}else{
+			$('#play_div').hide(1000);
+			setTimeout(function(){game_status_update();}, 15000);
 		}
-		setTimeout(()=>{alert('The game is over')},3500)
-		clearTimeout(timer);
-		me=[{token:null,id:null,username:null}];
-		game_status={status:null,selected_piece:null,last_change:null};
-		timer=null;
-		setTimeout(reset_board, 35000);
-		return;
+	
+		if(game_status.stauts==ended && me.result=='win'){
+			$('#player1wait').hide();
+			$('#player2wait').hide();
+			if(game_status.result=='win'){
+				$('#player1-message').text("The winner is " + me.name[0]);
+				$('#player2-message').text("The winner is " + me.name[0]);
 			}
+			setTimeout(()=>{alert('The game is over')},3500)
+			clearTimeout(timer);
+			me=[{token:null,id:null,username:null}];
+			game_status={status:null,selected_piece:null,last_change:null};
+			timer=null;
+			setTimeout(reset_board, 35000);
+			return;
+				}
+	
+	
+	
+	
+	}
+		
+	
 	
 }
 
 function fill_board() {
-	$.ajax({url: "api.php/board/", 
+	$.ajax({url: "domino.php/board/", 
 		success: fill_board_by_data });
 }
 
@@ -160,7 +179,7 @@ function fill_board_by_data(){
 }
 
 function reset_board() {
-	$.ajax({url: "api.php/board/", 
+	$.ajax({url: "domino.php/board/", 
 	 method: 'POST'});
 	window.location.hash="index";
 }
