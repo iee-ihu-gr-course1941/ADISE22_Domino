@@ -79,8 +79,8 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
 
-select firstvalue AS part1, secondvalue AS part2  from board where bid=1;
-
+#select firstvalue AS part1, secondvalue AS part2  from board where bid=1;
+#select * from board;
 -- Dumping data for table lousi.gamestatus: ~0 rows (approximately)
 
 -- Dumping structure for πίνακας lousi.players
@@ -105,6 +105,8 @@ CREATE TABLE IF NOT EXISTS `sharetile` (
   `id` int(11) NOT NULL,
   `tile_name` varchar(15) DEFAULT NULL,
   `player_name` varchar(10) DEFAULT NULL,
+  `firstvalue` INT DEFAULT NULL,
+  `secondvalue` INT DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
 #DROP TABLE sharetile;
@@ -178,7 +180,9 @@ BEGIN
   		(counter);
   		# kanoyme update to share tile diladi theloyme na paroyme ton pinaka clone tile pou exoume ta tiles se random metrisi kai oxi me tin siria opote
   		UPDATE sharetile
-  		SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1)  
+  		SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1),
+		  firstvalue = (SELECT firstvalue FROM clonetile  ),
+		 secondvalue = (SELECT secondvalue FROM clonetile )		    
   		WHERE tile_name IS NULL;
   		/*kanoume se sto tile_name to orisma pou pernoyme apo to query 
 		  select tilename apo to tilename randomny ena ena opou to to tile_name apo ton pinaka sharetile=null*/
@@ -253,11 +257,11 @@ END //
 DELIMITER ;
 
 
-#CALL play_tile('0-0','ajasj');
+#CALL play_tile('0-3','aggelos');
 #select * from board;
 #select * from sharetile;
 #select * from players;
-SELECT COUNT(*) FROM board WHERE btile IS NULL;
+#SELECT COUNT(*) FROM board WHERE btile IS NULL;
 
 DROP PROCEDURE IF EXISTS `check_play`;
 DELIMITER //
@@ -268,24 +272,34 @@ BEGIN
 	DECLARE n INT;
 
 	SELECT COUNT(*) INTO n FROM board WHERE btile IS NULL;
+	
+	#part1b1=(SELECT firstvalue FROM board WHERE bid=1);
+	#part2b1=(SELECT secondvalue FROM board WHERE bid=1);
+	#part1b2=(SELECT firstvalue FROM board WHERE bid=2);
+	#part2b2=(SELECT secondvalue FROM board WHERE bid=2);
+	
+	SELECT firstvalue As part1b1 FROM board WHERE bid=1; SELECT secondvalue as part2b1 FROM board WHERE bid=1;
+	SELECT firstvalue as part1b2 FROM board WHERE bid=2; Select secondvalue as part2b2 FROM board WHERE bid=2;
 
-	SELECT firstvalue as part1b1, secondvalue as part2b1 FROM board WHERE bid=1;
-	SELECT firstvalue as part1b2, secondvalue as part2b2 FROM board WHERE bid=2;
-
-	SELECT SUBSTRING_INDEX(ptile_name, '-', 1) AS part1, SUBSTRING_INDEX(ptile_name, '-', -1) AS part2;
+	SELECT SUBSTRING_INDEX(ptile_name, '-', 1) INTO partt1; Select SUBSTRING_INDEX(ptile_name, '-', -1) INTO partt2;
 	IF n=2 THEN
   		UPDATE board
   			SET
-    		btile=ptile_name
+    		btile=ptile_name,
+    		firstvalue=partt1,
+    		secondvalue=partt2
   			WHERE bid=1;
   
   DELETE FROM sharetile WHERE tile_name=ptile_name;
 	CALL update_turn(p_name);
 	
 	ELSEIF n=1 THEN
+		if partt1=part1b1 then
   		UPDATE board
   			SET
-    		btile=ptile_name
+    		btile=ptile_name,
+    		firstvalue=partt1,
+    		secondvalue=partt2
   		WHERE bid=2;
   
   DELETE FROM sharetile WHERE tile_name=ptile_name;
@@ -296,7 +310,7 @@ BEGIN
     SET
       btile=ptile_name,
       secondvalue=NULL,
-      firstvalule=partt2
+      firstvalue=partt2
     WHERE firstvalue=partt2;
 	  			DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  			CALL update_turn(p_name);
@@ -307,6 +321,7 @@ BEGIN
 		  	firstvalue=NULL,
 			secondvalue=partt2
 	  	WHERE secondvalue=partt2;
+	  	
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	CALL update_turn(p_name);
 	
@@ -315,8 +330,9 @@ BEGIN
 	  	SET
 		  	btile=ptile_name,
 		  	secondvalue=NULL,
-		  	firstvalule=partt1
+		  	firstvalue=partt1
 	  	WHERE firstvalue=partt1;
+	  	
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	CALL update_turn(p_name);
 			
@@ -327,6 +343,7 @@ BEGIN
 		  	firstvaule=NULL,
 		  	secondvalue=partt1
 	  	WHERE firstvalue=partt1;
+	  	
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	CALL update_turn(p_name);
 	ELSE
@@ -483,7 +500,8 @@ WHERE bid = 2;
 
 */
 #update game_status set p_turn=if(p_color='W','B','W');
-/*#CALL play_tile('0-4', 'ajasj');
+/*#CALL play_tile('3-5', 'aggelos');
+	select * from sharetile;
 select * from players;
 	select * from board;
 	update board set btile='1-3' where bid='2'

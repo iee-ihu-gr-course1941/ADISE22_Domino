@@ -4,7 +4,7 @@
 	require_once "../lib/dbconnection.php";
 
 
-function play_tile($b){
+function play_tile($tilename,$player){
 
 	if (!isset($input['tilename']) || $input['tilename'] === '' || !isset($input['player']) || $input['player'] === '') {
 		header("HTTP/1.1 400 Bad Request");

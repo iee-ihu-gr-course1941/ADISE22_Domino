@@ -7,7 +7,8 @@ require_once "../lib/players.php";
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
 $input = json_decode(file_get_contents('php://input'),true);
-
+$input1=json_decode(file_get_contents('php://input'),true);
+$input2=json_decode(file_get_contents('php://input'),true);
 if($input==null) {
     $input=[];
 }
@@ -30,7 +31,7 @@ switch($r=array_shift($request)){
         break;
     case'tiles':handle_tiles($method,$request,$input);
         break;
-    case'play':handle_game($method,$tilename,$player,$request,$input);
+    case'play':handle_game($method,$request,$input1,$input2);
         break;
     case'abort':handle_abort($method,$request,$input);
         break;
@@ -52,13 +53,13 @@ function handle_draw($method,$player,$input){
   }
 }
 
-function handle_game($method,$tilename,$player,$input){
-  // $pi=array_shift($p);
-   // $d=array_shift($id);
+function handle_game($method,$input1,$input2){
+    $tilename = $input1['tilename'];
+    $player = $input2['player'];
     if($method=='GET') {
         show_board();
     }elseif($method=='PUT'){
-        play_tile($input);
+        play_tile($tilename,$player);
     }else{
         header("HTTP/1.1 400 Bad Request");
         print json_encode(['errormesg'=>"Method $method not allowed here."]);

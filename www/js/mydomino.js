@@ -18,7 +18,7 @@ $(function () {
 });
 
 function exitgame(){
-	window.location.hash="play"
+	window.location="#index";
 }
 
 
@@ -77,7 +77,7 @@ function login_to_game() {
 
 function login_result(data) {
 	me = data;
-	window.location.hash="play";
+	window.location="#play.html";
 	game_status_update();
 	
 }
