@@ -22,7 +22,7 @@ board, board_empty, gamestatus, players, sharetile, tile
 επισεις υπάρχει ενασ πίνακας clonetile για την βοήθεια
 να μοιράσουμε τα tiles έτσι ώστε να μην έχουμε διπλό έγραφες και επισεις η βάση ολοκληρώνεται
 με τα procedure check_aboard,check_play,cherck_result,cleanboard,draw_tile,play_tile,
-tile_shuffle,update_sharetile,update_turn.
+tile_shuffle,update_sharetile,update_turn,first_move.
 
 Έπειτα είναι υλοποιημένο σε php για το API κώδικα με με ($. ajax) javascript κώδικα για την μεριά του client Και τα κατάλληλα css
 για τα html αρχεία και to bootstrap
