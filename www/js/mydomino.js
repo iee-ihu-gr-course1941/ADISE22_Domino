@@ -6,17 +6,17 @@ var timer=null;
 
 
 
-$(function(){
-
-	drawBoard('board1');
-	drawBoard('board2');
-	//$('#gamelogin').click(login_to_game);
-	$('#gamelogin').click( login_to_game);
+$(function () {
+	//drawBoard('board1');
+	//drawBoard('board2');
+	$('#gamelogin').click(login_to_game);
+	//document.getElementById("gamelogin").addEventListener("click", login_to_game);
 	$('#playbutton').click(play_tile);
 	$('#drawbutton').click(draw_tile);
 	$('#exit').click(exitgame);
+	//game_status_update();
 
-	
+
 });
 
 function exitgame(){
@@ -52,27 +52,31 @@ function play_tile(tilename,playername){
 
 
 function login_to_game() {
-	if($('#name').val()=='') {
+	if($('#username').val()=='') {
 		alert('You have to set a username');
 		return;
-	}else{
-		load("play.html");
-		$.ajax({url: "domino.php/players", 
+	}
+		$.ajax({url:"domino.php/players",
 			method: 'PUT',
 			dataType: "json",
+			headers: {"X-Token": me.token},
 			contentType: 'application/json',
-			data: JSON.stringify( {name: $('#name').val()}),
-			success: login_result,
-			error: result_error});
+			data: JSON.stringify( {name: $('#username').val()}),
+			success: login_result});
+			//error: result_error});
 	}
 
 	
-}
 
-function result_error() {
-	var x = data.responseJSON;
-	alert(x.errormesg);
-}
+
+	function result_error(data) {
+		if (data && data.responseJSON && data.responseJSON.errormesg) {
+			var x = data.responseJSON;
+			alert(x.errormesg);
+		} else {
+			alert('An unknown error occurred.');
+		}
+	}
 
  function sharetiles(){
 	$.ajax({url:"domino.php/stiles",
@@ -89,10 +93,6 @@ function login_result(data) {
 	
 }
 
-function login_error(data,y,z,c) {
-	var x = data.responseJSON;
-	alert(x.errormesg);
-}
 
 function game_status_update() {
 	clearTimeout(timer);
