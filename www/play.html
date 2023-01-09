@@ -12,27 +12,23 @@
     </head>
   <body>
     <h1>You Are Loged.!</h1>
+    <h3>
+      <p id="watingplayer">waiting players</p>
+  </h3>
     <div class="play">
         <h2>
             <span id="player1l">Player1</span>
-            <span class="arrow" id="player1"></span>
+            <span class="right" id="player2l">Player2</span>
+           
         </h2>
-        <h3>
-            <p id="player1wait">Waiting...</p>
-        </h3>
-        <h2>
-            <span id="player2l">Player2</span>
-            <span class="arrow" id="player2">
-                <i class="fas fa-long-arrow-alt-left"></i></span>       
-        </h2>   
-        <h3>
-            <p id="player2wait">Waiting...</p>
-        </h3>
+    </div>
         <div id='board' style="display: flex;" class="center">
+          <tr>
             <img src="../www/im/board.jpg" alt="gameboard" class="center"> 
-            <canvas id="board1" width="50" height="50"></canvas>
+            <td id="board1" width="50" height="50"></td>
             <img src="../www/im/board.jpg" alt="gameboard" class="center"> 
-            <canvas id="board2" width="50" height="50"></canvas>
+            <td id="board2" width="50" height="50"></td>
+          </tr>
         </div>
         
         <div1  id="play_div"style="display: -ms-flexbox"  class="center"  >
@@ -66,7 +62,6 @@
           <button2 id='exit'  type="submit" class="center">exit</button2>
      </div>
     </div>
-    </div>
-
+  </div>
   </body>
 </html>

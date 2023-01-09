@@ -1,5 +1,6 @@
-var me={token:null,id:null,username:null};
+var me={token:null,id:null,name:null};
 var game_status={status:null};
+var tile={tile:null};
 var board={};
 var last_update=new Date().getTime();
 var timer=null;
@@ -7,10 +8,7 @@ var timer=null;
 
 
 $(function () {
-	//drawBoard('board1');
-	//drawBoard('board2');
 	$('#gamelogin').click(login_to_game);
-	//document.getElementById("gamelogin").addEventListener("click", login_to_game);
 	$('#playbutton').click(play_tile);
 	$('#drawbutton').click(draw_tile);
 	$('#exit').click(exitgame);
@@ -24,30 +22,25 @@ function exitgame(){
 }
 
 
-
-
-function drawBoard(canvasId) {
-    const canvas = document.getElementById(canvasId);
-    const ctx = canvas.getContext('2d');
-
-    // Draw the board
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.fillRect(50, 50, 300, 300);
-  }
-
-function play_tile(tilename,playername){
+function play_tile(){
 	if($('#tile').val()=="" & $('#playername').val()==""){
 		alert('You have to set a tile and player name');
 			return;
 	}
-	$.ajax({url: "domino.php/play", 
+	$.ajax({url: "domino.php/play/", 
 					method: 'PUT',
-					dataType: "json".stringify({tilename,playername}),
+					dataType: "json",
 					contentType: 'application/json',
-					data: JSON.stringify( {tile: $('#tile').val(),playername: $('#playername')}),
-					success: game_status_update}
+					data: JSON.stringify( {tile: $('#tile').val(),name: $('#playername')}),
+					success: playresult()}
 		
 	);
+  }
+
+
+  function playresult(){
+	game_status_update();
+	fill_board();
   }
 
 
@@ -56,26 +49,22 @@ function login_to_game() {
 		alert('You have to set a username');
 		return;
 	}
-		$.ajax({url:"domino.php/players",
+		$.ajax({url:"domino.php/players/",
 			method: 'PUT',
 			dataType: "json",
 			headers: {"X-Token": me.token},
 			contentType: 'application/json',
 			data: JSON.stringify( {name: $('#username').val()}),
-			success: login_result});
-			//error: result_error});
+			success: login_result,
+			error: result_error});
 	}
 
 	
 
 
 	function result_error(data) {
-		if (data && data.responseJSON && data.responseJSON.errormesg) {
-			var x = data.responseJSON;
-			alert(x.errormesg);
-		} else {
-			alert('An unknown error occurred.');
-		}
+		var x = data.responseJSON;
+	alert(x.errormesg);
 	}
 
  function sharetiles(){
@@ -96,7 +85,7 @@ function login_result(data) {
 
 function game_status_update() {
 	clearTimeout(timer);
-	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": data.token} });
+	$.ajax({url: "domino.php/status/", success: update_status,headers: {"X-Token": me.token} });
 }
 
 function get_Shared_tiles_by_player(){
@@ -107,7 +96,7 @@ function get_Shared_tiles_by_player(){
 }
 
 function draw_tile(){
-	$.ajax({url:"domino.php/draw",
+	$.ajax({url:"domino.php/draw/",
 	method: 'PUT',
 	headers:{"X-Token": me.username},
 	success: get_Shared_tiles_by_player});
@@ -126,7 +115,7 @@ function showplayershand(data){
 
 
 function check_aboart(){
-	$.ajax({url:"domino.php/abort",
+	$.ajax({url:"domino.php/abort/",
 		method: 'GET'
 		//,success: update_status//
 	});
@@ -159,8 +148,7 @@ function update_status(data){
 		}
 	
 		if(game_status.stauts==ended && me.result=='win'){
-			$('#player1wait').hide();
-			$('#player2wait').hide();
+			$('#watingplayer').hide();
 			if(game_status.result=='win'){
 				$('#player1-message').text("The winner is " + me.name[0]);
 				$('#player2-message').text("The winner is " + me.name[0]);
@@ -217,7 +205,7 @@ function reset_board() {
 
 
 function update_username1(data){
-	$('#player1').text(data[0].name);
+	$('#player1l').text(data[0].name);
 }
 
 function opponentUsername(){
@@ -229,11 +217,19 @@ function opponentUsername(){
 }
 
 function update_username2(data){
-	$('#player2').text(data[0].name);
+	$('#player2l').text(data[0].name);
 }
 
 
 
+/* function drawBoard(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+
+    // Draw the board
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(50, 50, 300, 300);
+  } */
 
 
 

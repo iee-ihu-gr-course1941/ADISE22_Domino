@@ -16,7 +16,7 @@ h2 {
   font-size: 190%;
 }
 h3{
-  text-align: left;
+  text-align: center;
   color: #edece4;
   font-family: 'Arial Narrow';
   font-size: 120%;
@@ -95,6 +95,13 @@ input[type="submit"]:hover {
   margin-right: auto;
   width: 40%;
   border-radius: 10%;
+}
+
+.right{
+  position: absolute;
+  right: 150px;  
+  width: 200px;
+  height: 120px;
 }
 
 
