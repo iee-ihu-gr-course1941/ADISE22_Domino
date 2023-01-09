@@ -55,15 +55,18 @@ function login_to_game() {
 	if($('#name').val()=='') {
 		alert('You have to set a username');
 		return;
-	}
-	
-	$.ajax({url: "domino.php/players", 
+	}else{
+		load("play.html");
+		$.ajax({url: "domino.php/players", 
 			method: 'PUT',
 			dataType: "json",
 			contentType: 'application/json',
 			data: JSON.stringify( {name: $('#name').val()}),
 			success: login_result,
 			error: result_error});
+	}
+
+	
 }
 
 function result_error() {
