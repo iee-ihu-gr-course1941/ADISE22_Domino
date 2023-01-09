@@ -43,14 +43,14 @@ function sharetiles(){
 
 
 function drawtile($b){
-
+/* 
 	if(!isset($input['name']) || $input['name']=='') {
 		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"No tile choosen."]);
+		print json_encode(['errormesg'=>"no name given"]);
 		exit;
 	}
-	$username=$input['name'];
-
+	$username=$input['name']; */
+	$username=$b;
 	global $mysqli;
 	$sql='call draw_tile(?)';
 	$st=$mysqli->prepare($sql);

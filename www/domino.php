@@ -7,8 +7,6 @@ require_once "../lib/players.php";
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
 $input = json_decode(file_get_contents('php://input'),true);
-$input1=json_decode(file_get_contents('php://input'),true);
-$input2=json_decode(file_get_contents('php://input'),true);
 if($input==null) {
     $input=[];
 }
@@ -31,11 +29,11 @@ switch($r=array_shift($request)){
         break;
     case'tiles':handle_tiles($method,$request,$input);
         break;
-    case'play':handle_game($method,$request,$input1,$input2);
+    case'play':handle_game($method,$request,$input);
         break;
     case'abort':handle_abort($method,$request,$input);
         break;
-    case 'draw':handle_draw($method,$player,$request,$input);
+    case 'draw':handle_draw($method,$request,$input);
         break;
     default :header("HTTP/1.1 404 NOT Found");
         exit;
@@ -44,22 +42,25 @@ switch($r=array_shift($request)){
 }
 
 
-function handle_draw($method,$player,$input){
-    if($method=='PUT'){
-          drawtile($player);
-      }else{
-            header("HTTP/1.1 400 Bad Request");
-            print json_encode(['errormesg'=>"Method $method not allowed here."]);
-  }
+function handle_draw($method,$p,$input){
+    $b=array_shift($p);
+    if($b=='' or null){
+        header("HTTP/1.1 400 Bad Request");
+        print json_encode(['errormesg'=>"Method $method not allowed here."]);
+      } 
+      if ($method=='PUT'){
+        drawtile($b);
+        }
+
 }
 
-function handle_game($method,$input1,$input2){
-    $tilename = $input1['tilename'];
-    $player = $input2['player'];
+function handle_game($method,$p,$input){
+    $b=array_shift($p);
+    
     if($method=='GET') {
         show_board();
     }elseif($method=='PUT'){
-        play_tile($tilename,$player);
+        play_tile($b);
     }else{
         header("HTTP/1.1 400 Bad Request");
         print json_encode(['errormesg'=>"Method $method not allowed here."]);
