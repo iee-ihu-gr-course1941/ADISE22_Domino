@@ -89,7 +89,7 @@ function show_players_sharedtiles($b){
 }
 
 
-function current_player($token) {
+/* function current_player($token) {
 	
 	global $mysqli;
 	if($token==null) {return(null);}
@@ -102,7 +102,7 @@ function current_player($token) {
 		return($row['id']);
 	}
 	return(null);
-}
+} */
 
 
 //Σχεδον τελος με τους Players just checking //

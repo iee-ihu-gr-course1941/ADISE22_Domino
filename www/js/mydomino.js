@@ -14,9 +14,14 @@ $(function(){
 	$('#gamelogin').click( login_to_game);
 	$('#playbutton').click(play_tile);
 	$('#drawbutton').click(draw_tile);
+	$('#exit').click(exitgame);
 
 	
 });
+
+function exitgame(){
+	window.location.hash="play"
+}
 
 
 
