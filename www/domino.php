@@ -29,7 +29,7 @@ switch($r=array_shift($request)){
         break;
     case'tiles':handle_tiles($method,$request,$input);
         break;
-    case'play':handle_game($method,$request,$input);
+    case'play':handle_game($method,$request[0],$request[1],$input);
         break;
     case'abort':handle_abort($method,$request,$input);
         break;
@@ -54,13 +54,15 @@ function handle_draw($method,$p,$input){
 
 }
 
-function handle_game($method,$p,$input){
-    $b=array_shift($p);
-    
+function handle_game($method,$tilename,$playername,$input){
+    //$b=array_shift($p);
+    //$tilename=$_GET['tile']
     if($method=='GET') {
         show_board();
     }elseif($method=='PUT'){
-        play_tile($b);
+        $tilename=$input['tilename'];
+	    $playername=$input['player'];
+    play_tile($tilename,$playername);/*,$input['token']*/
     }else{
         header("HTTP/1.1 400 Bad Request");
         print json_encode(['errormesg'=>"Method $method not allowed here."]);

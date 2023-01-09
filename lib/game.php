@@ -5,19 +5,9 @@
 
 
 function play_tile($tilename,$player){
-
-	if (!isset($input['tilename']) || $input['tilename'] === '' || !isset($input['player']) || $input['player'] === '') {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"YOU DONT GAVE A NAME OR A TILE."]);
-		exit;
-	}
-
-	$tilename=$input['tilename'];
-	$player=$input['player'];
-	
-
-
-		global $mysqli;
+	global $mysqli;
+	//$input['tilename'];
+	//$input['player'];
 	try {  
 		$sql = 'CALL play_tile (?,?)';
 		$st1 = $mysqli->prepare($sql);
