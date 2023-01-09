@@ -93,9 +93,6 @@ CREATE TABLE IF NOT EXISTS `players` (
   `result` varchar (11) DEFAULT NULL, 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
-
-
-
 -- Dumping data for table lousi.players: ~0 rows (approximately)
 
 
@@ -180,9 +177,7 @@ BEGIN
   		(counter);
   		# kanoyme update to share tile diladi theloyme na paroyme ton pinaka clone tile pou exoume ta tiles se random metrisi kai oxi me tin siria opote
   		UPDATE sharetile
-  		SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1),
-		  firstvalue = (SELECT firstvalue FROM clonetile  ),
-		 secondvalue = (SELECT secondvalue FROM clonetile )		    
+  		SET tile_name = (SELECT tilename FROM clonetile ORDER BY RAND() LIMIT 1)	    
   		WHERE tile_name IS NULL;
   		/*kanoume se sto tile_name to orisma pou pernoyme apo to query 
 		  select tilename apo to tilename randomny ena ena opou to to tile_name apo ton pinaka sharetile=null*/
@@ -257,9 +252,11 @@ END //
 DELIMITER ;
 
 
-#CALL play_tile('0-3','aggelos');
+#CALL play_tile('4-4','aggelos2');
+#call draw_tile('aggelos');
 #select * from board;
 #select * from sharetile;
+#select count(*) from sharetile where player_name is not null;
 #select * from players;
 #SELECT COUNT(*) FROM board WHERE btile IS NULL;
 
@@ -282,30 +279,13 @@ BEGIN
 	SELECT firstvalue as part1b2 FROM board WHERE bid=2; Select secondvalue as part2b2 FROM board WHERE bid=2;
 
 	SELECT SUBSTRING_INDEX(ptile_name, '-', 1) INTO partt1; Select SUBSTRING_INDEX(ptile_name, '-', -1) INTO partt2;
-	IF n=2 THEN
-  		UPDATE board
-  			SET
-    		btile=ptile_name,
-    		firstvalue=partt1,
-    		secondvalue=partt2
-  			WHERE bid=1;
-  
-  DELETE FROM sharetile WHERE tile_name=ptile_name;
-	CALL update_turn(p_name);
-	
-	ELSEIF n=1 THEN
-		if partt1=part1b1 then
-  		UPDATE board
-  			SET
-    		btile=ptile_name,
-    		firstvalue=partt1,
-    		secondvalue=partt2
-  		WHERE bid=2;
-  
-  DELETE FROM sharetile WHERE tile_name=ptile_name;
-  CALL update_turn(p_name);
-	
-	ELSE IF partt1 = part1b1 THEN
+	IF n<2 THEN
+  	
+  		CALL first_move;
+  		DELETE FROM sharetile WHERE tile_name=ptile_name;
+		CALL update_turn(p_name);
+	ELSE 
+		IF partt1 = part1b1 THEN
     UPDATE board
     SET
       btile=ptile_name,
@@ -351,11 +331,16 @@ BEGIN
   
   	END IF;
   		END IF;
+  		END if;
   			END IF;
-  				END IF;
   					END IF;
 END//
 DELIMITER ;
+
+
+
+
+
 
 DROP PROCEDURE IF EXISTS `update_turn`;
 DELIMITER //
@@ -393,7 +378,72 @@ DELIMITER ;
 
 
 
+DROP PROCEDURE IF EXISTS `first_move`;
+DELIMITER //
+CREATE PROCEDURE `first_move` (IN ptile_name VARCHAR(15))
+	BEGIN
+		DECLARE partt1 INT; DECLARE partt2 INT;
+	DECLARE part1b1 INT; DECLARE part2b1 INT; DECLARE part1b2 INT; DECLARE part2b2 INT;
+	DECLARE n INT;
 
+	SELECT COUNT(*) INTO n FROM board WHERE btile IS NULL;
+	
+	SELECT firstvalue As part1b1 FROM board WHERE bid=1; SELECT secondvalue as part2b1 FROM board WHERE bid=1;
+	SELECT firstvalue as part1b2 FROM board WHERE bid=2; Select secondvalue as part2b2 FROM board WHERE bid=2;
+
+	SELECT SUBSTRING_INDEX(ptile_name, '-', 1) INTO partt1; Select SUBSTRING_INDEX(ptile_name, '-', -1) INTO partt2;
+	
+	if n=2 then
+  		UPDATE board
+  			SET
+    		btile=ptile_name,
+    		firstvalue=partt1,
+    		secondvalue=partt2
+  			WHERE bid=1;
+  DELETE FROM sharetile WHERE tile_name=ptile_name;
+	ELSE IF n=1 THEN
+		 IF partt1=part1b1 then
+  		UPDATE board
+  			SET
+    		btile=ptile_name,
+    		firstvalue=partt1,
+    		secondvalue=partt2
+  		WHERE bid=2; 
+    	ELSE 
+		 	if partt2=part1b1 then
+  				UPDATE board
+  				SET
+    				btile=ptile_name,
+    				firstvalue=partt1,
+    				secondvalue=partt2
+  				WHERE bid=2; 
+  		ELSE 
+		   IF partt2=part1b1 then
+		   	UPDATE board
+  				SET
+    				btile=ptile_name,
+    				firstvalue=partt1,
+    				secondvalue=partt2
+  			WHERE bid=2; 
+		ELSE  
+			IF partt2=part1b2 then
+		   	UPDATE board
+  				SET
+    				btile=ptile_name,
+    				firstvalue=partt1,
+    				secondvalue=partt2
+  			WHERE bid=2; 
+  		Else
+    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You cannot place this tile here';
+  	END IF;
+  	END if; 
+	  END if;
+	  END if;
+	  END if;
+	  END if;
+  	
+END //
+DELIMITER ;
 
 
 
