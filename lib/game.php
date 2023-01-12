@@ -6,18 +6,13 @@
 
 function play_tile($tilename,$player){
 	global $mysqli;
-	//$input['tilename'];
-	//$input['player'];
-	try {  
-		$sql = 'CALL play_tile (?,?)';
-		$st1 = $mysqli->prepare($sql);
-		$st1->bind_param('ss',$tilename,$player);
-		$st1->execute();
-		$res = $st1->get_result();  
-	}  
-	catch(exception $e) {
-	  echo "ex: ".$e; 
-	}
+	$sql ="CALL play_tile(?,?)";
+	$st = $mysqli->prepare($sql);
+	$st->bind_param('ss',$tilename,$player);
+	$st->execute();
+	$res = $st->get_result();  
+	checkResult();
+
 }
 	
 
@@ -91,16 +86,15 @@ function update_gameStatus() {
 		
 }
 
-function checkResult($player){
+function checkResult(){
 	 	global $mysqli; 
 		$sql='select count(DISTINCT player_name) as c from sharetile';
 		$st = $mysqli->prepare($sql);
 		$st->execute() ;
 		$res= $st->get_result();
 		if(['c']==1){
-			$sql="call check_result('?')";
+			$sql="call check_result('')";
         	$st = $mysqli->prepare($sql);
-        	$st->bind_param('s',$player);
         	$st->execute() ;
 
 			$sql='select name from players where result="win" ';

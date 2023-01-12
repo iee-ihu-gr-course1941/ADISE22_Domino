@@ -17,6 +17,19 @@ if(isset($_SERVER['HTTP_X_TOKEN'])) {
 }
 
 
+$input1 = json_decode(file_get_contents('php://input'),true);
+if($input1==null) {
+    $input1=[];
+}
+if(isset($_SERVER['HTTP_X_TOKEN'])) {
+    $input1['token']=$_SERVER['HTTP_X_TOKEN'];
+} else {
+    $input1['token']='';
+}
+
+
+
+
 
 
 
@@ -29,7 +42,7 @@ switch($r=array_shift($request)){
         break;
     case'tiles':handle_tiles($method,$request,$input);
         break;
-    case'play':handle_game($method,$request[0],$request[1],$input);
+    case'play':handle_game($method,$request,$input,$input1);
         break;
     case'abort':handle_abort($method,$request,$input);
         break;
@@ -54,15 +67,13 @@ function handle_draw($method,$p,$input){
 
 }
 
-function handle_game($method,$tilename,$playername,$input){
+function handle_game($method,$input,$input1){
     //$b=array_shift($p);
     //$tilename=$_GET['tile']
     if($method=='GET') {
         show_board();
     }elseif($method=='PUT'){
-        $tilename=$input['tilename'];
-	    $playername=$input['player'];
-    play_tile($tilename,$playername);/*,$input['token']*/
+    play_tile($input,$input1);/*,$input['token']*/
     }else{
         header("HTTP/1.1 400 Bad Request");
         print json_encode(['errormesg'=>"Method $method not allowed here."]);

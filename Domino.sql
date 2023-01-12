@@ -36,7 +36,7 @@ INSERT INTO `board` (`bid`) VALUES
 	('2');
 
 -- Dumping structure for πίνακας lousi.board_empty
-DROP TABLE IF EXISTS `boart_empty`;
+DROP TABLE IF EXISTS `board_empty`;
 CREATE TABLE IF NOT EXISTS `board_empty` (
   `bid` enum('1','2') NOT NULL,
   `btile` varchar(10) DEFAULT NULL,
@@ -66,6 +66,7 @@ END//
 DELIMITER ;
 #CALL cleanboard();
 #SELECT * FROM board;
+#SELECT * FROM board_empty;
 
 
 -- Dumping structure for πίνακας lousi.gamestatus
@@ -102,8 +103,8 @@ CREATE TABLE IF NOT EXISTS `sharetile` (
   `id` int(11) NOT NULL,
   `tile_name` varchar(15) DEFAULT NULL,
   `player_name` varchar(10) DEFAULT NULL,
-  `firstvalue` INT DEFAULT NULL,
-  `secondvalue` INT DEFAULT NULL,
+  #`firstvalue` INT DEFAULT NULL,
+  #`secondvalue` INT DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=UTF8_GENERAL_CI;
 #DROP TABLE sharetile;
@@ -209,21 +210,26 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `check_result`;
 DELIMITER //
-CREATE PROCEDURE `check_result` (IN player_name VARCHAR(10))
+CREATE PROCEDURE `check_result` ()
 BEGIN
 	DECLARE res VARCHAR(10);
-    UPDATE players
-    SET result = 'win'
-    WHERE name NOT IN (SELECT player_name FROM sharetile);
     
-    SELECT result FROM players INTO res;
+	 UPDATE players
+    SET result = 'win'
+    WHERE NAME NOT IN  (SELECT DISTINCT (player_name) FROM sharetile WHERE player_name IS not null);
+    
+    SELECT result INTO res  FROM players WHERE result='win';
     
     IF res='win' Then
     	UPDATE gamestatus
-    		SET status='end';
+    		SET status='ended';
     END if;
 END //
 DELIMITER ;
+#SELECT * FROM players;
+#call check_result;
+#select * from gamestatus;
+#CALL check_result();
 
 DROP PROCEDURE IF EXISTS `check_aboard`;
 DELIMITER //
@@ -252,12 +258,14 @@ END //
 DELIMITER ;
 
 
-#CALL play_tile('4-4','aggelos2');
+#CALL play_tile('1-1','aggelos2');
 #call draw_tile('aggelos');
 #select * from board;
 #select * from sharetile;
+#select * from gamestatus;
 #select count(*) from sharetile where player_name is not null;
 #select * from players;
+#select count(*) from sharetile where player_name is not null;
 #SELECT COUNT(*) FROM board WHERE btile IS NULL;
 
 DROP PROCEDURE IF EXISTS `check_play`;
@@ -268,20 +276,21 @@ BEGIN
 	DECLARE part1b1 INT; DECLARE part2b1 INT; DECLARE part1b2 INT; DECLARE part2b2 INT;
 	DECLARE n INT;
 
-	SELECT COUNT(*) INTO n FROM board WHERE btile IS NULL;
+	SELECT COUNT(*) INTO n  FROM board WHERE btile IS NULL;
 	
 	#part1b1=(SELECT firstvalue FROM board WHERE bid=1);
 	#part2b1=(SELECT secondvalue FROM board WHERE bid=1);
 	#part1b2=(SELECT firstvalue FROM board WHERE bid=2);
 	#part2b2=(SELECT secondvalue FROM board WHERE bid=2);
 	
-	SELECT firstvalue As part1b1 FROM board WHERE bid=1; SELECT secondvalue as part2b1 FROM board WHERE bid=1;
-	SELECT firstvalue as part1b2 FROM board WHERE bid=2; Select secondvalue as part2b2 FROM board WHERE bid=2;
+	SELECT firstvalue INTO part1b1 FROM board WHERE bid=1; SELECT secondvalue INTO part2b1 FROM board WHERE bid=1;
+	SELECT firstvalue INTO part1b2 FROM board WHERE bid=2; Select secondvalue INTO part2b2 FROM board WHERE bid=2;
 
 	SELECT SUBSTRING_INDEX(ptile_name, '-', 1) INTO partt1; Select SUBSTRING_INDEX(ptile_name, '-', -1) INTO partt2;
-	IF n<2 THEN
+	
+	IF n!=0 THEN
   	
-  		CALL first_move;
+  		CALL first_move(ptile_name);
   		DELETE FROM sharetile WHERE tile_name=ptile_name;
 		CALL update_turn(p_name);
 	ELSE 
@@ -291,7 +300,7 @@ BEGIN
       btile=ptile_name,
       secondvalue=NULL,
       firstvalue=partt2
-    WHERE firstvalue=partt2;
+    WHERE firstvalue=partt1;
 	  			DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  			CALL update_turn(p_name);
 	ELSE if partt1 = part2b2 then
@@ -300,7 +309,7 @@ BEGIN
 		  	btile=ptile_name,
 		  	firstvalue=NULL,
 			secondvalue=partt2
-	  	WHERE secondvalue=partt2;
+	  	WHERE secondvalue=partt1;
 	  	
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	CALL update_turn(p_name);
@@ -311,7 +320,7 @@ BEGIN
 		  	btile=ptile_name,
 		  	secondvalue=NULL,
 		  	firstvalue=partt1
-	  	WHERE firstvalue=partt1;
+	  	WHERE firstvalue=partt2;
 	  	
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	CALL update_turn(p_name);
@@ -320,9 +329,9 @@ BEGIN
 		UPDATE board
 	  	SET
 		  	btile=ptile_name,
-		  	firstvaule=NULL,
+		  	firstvalue=NULL,
 		  	secondvalue=partt1
-	  	WHERE firstvalue=partt1;
+	  	WHERE secondvalue=partt2;
 	  	
 	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
 	  	CALL update_turn(p_name);
@@ -386,10 +395,10 @@ CREATE PROCEDURE `first_move` (IN ptile_name VARCHAR(15))
 	DECLARE part1b1 INT; DECLARE part2b1 INT; DECLARE part1b2 INT; DECLARE part2b2 INT;
 	DECLARE n INT;
 
-	SELECT COUNT(*) INTO n FROM board WHERE btile IS NULL;
+	SELECT COUNT(*) INTO n   FROM board WHERE btile IS NULL;
 	
-	SELECT firstvalue As part1b1 FROM board WHERE bid=1; SELECT secondvalue as part2b1 FROM board WHERE bid=1;
-	SELECT firstvalue as part1b2 FROM board WHERE bid=2; Select secondvalue as part2b2 FROM board WHERE bid=2;
+	SELECT firstvalue INTO part1b1 FROM board WHERE bid=1; SELECT secondvalue INTO part2b1 FROM board WHERE bid=1;
+	SELECT firstvalue INTO part1b2 FROM board WHERE bid=2; Select secondvalue INTO part2b2 FROM board WHERE bid=2;
 
 	SELECT SUBSTRING_INDEX(ptile_name, '-', 1) INTO partt1; Select SUBSTRING_INDEX(ptile_name, '-', -1) INTO partt2;
 	
@@ -400,7 +409,7 @@ CREATE PROCEDURE `first_move` (IN ptile_name VARCHAR(15))
     		firstvalue=partt1,
     		secondvalue=partt2
   			WHERE bid=1;
-  DELETE FROM sharetile WHERE tile_name=ptile_name;
+
 	ELSE IF n=1 THEN
 		 IF partt1=part1b1 then
   		UPDATE board
@@ -408,33 +417,46 @@ CREATE PROCEDURE `first_move` (IN ptile_name VARCHAR(15))
     		btile=ptile_name,
     		firstvalue=partt1,
     		secondvalue=partt2
-  		WHERE bid=2; 
-    	ELSE 
+  		WHERE bid=2;
+		
+	
+    	
+		 ELSE 
 		 	if partt2=part1b1 then
   				UPDATE board
   				SET
     				btile=ptile_name,
     				firstvalue=partt1,
     				secondvalue=partt2
-  				WHERE bid=2; 
-  		ELSE 
-		   IF partt2=part1b1 then
+  				WHERE bid=2;
+		
+	
+  		
+		  ELSE 
+		   IF partt1=part2b1 then
 		   	UPDATE board
   				SET
     				btile=ptile_name,
     				firstvalue=partt1,
     				secondvalue=partt2
-  			WHERE bid=2; 
+  			
+			  WHERE bid=2;
+		 
+		  
+		
 		ELSE  
-			IF partt2=part1b2 then
+			IF partt2=part2b1 then
 		   	UPDATE board
   				SET
     				btile=ptile_name,
     				firstvalue=partt1,
     				secondvalue=partt2
-  			WHERE bid=2; 
-  		Else
-    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You cannot place this tile here';
+  				WHERE bid=2;
+		 
+		 	   
+  		
+		  Else
+    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You cannot fist move';
   	END IF;
   	END if; 
 	  END if;
@@ -597,6 +619,121 @@ select * from players;
 	Delete from sharetile where player_name='aggelos';
 	select * from sharetile;
 	select * from players;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	DROP PROCEDURE IF EXISTS `check_play`;
+DELIMITER //
+CREATE PROCEDURE check_play(IN ptile_name VARCHAR(15), IN p_name VARCHAR(15))
+BEGIN
+	DECLARE partt1 INT; DECLARE partt2 INT;
+	DECLARE part1b1 INT; DECLARE part2b1 INT; DECLARE part1b2 INT; DECLARE part2b2 INT;
+	DECLARE n INT;
+
+	SELECT COUNT(*) INTO n FROM board WHERE btile IS NULL;
+	
+	#part1b1=(SELECT firstvalue FROM board WHERE bid=1);
+	#part2b1=(SELECT secondvalue FROM board WHERE bid=1);
+	#part1b2=(SELECT firstvalue FROM board WHERE bid=2);
+	#part2b2=(SELECT secondvalue FROM board WHERE bid=2);
+	
+	SELECT firstvalue As part1b1 FROM board WHERE bid=1; SELECT secondvalue as part2b1 FROM board WHERE bid=1;
+	SELECT firstvalue as part1b2 FROM board WHERE bid=2; Select secondvalue as part2b2 FROM board WHERE bid=2;
+
+	SELECT SUBSTRING_INDEX(ptile_name, '-', 1) INTO partt1; Select SUBSTRING_INDEX(ptile_name, '-', -1) INTO partt2;
+	IF n=2 THEN
+  		UPDATE board
+  			SET
+    		btile=ptile_name,
+    		firstvalue=partt1,
+    		secondvalue=partt2
+  			WHERE bid=1;
+  
+  DELETE FROM sharetile WHERE tile_name=ptile_name;
+	CALL update_turn(p_name);
+	
+	ELSEIF n=1 THEN
+		if partt1=part1b1 then
+  		UPDATE board
+  			SET
+    		btile=ptile_name,
+    		firstvalue=partt1,
+    		secondvalue=partt2
+  		WHERE bid=2;
+  
+  DELETE FROM sharetile WHERE tile_name=ptile_name;
+  CALL update_turn(p_name);
+	
+	ELSE IF partt1 = part1b1 THEN
+    UPDATE board
+    SET
+      btile=ptile_name,
+      secondvalue=NULL,
+      firstvalue=partt2
+    WHERE firstvalue=partt2;
+	  			DELETE FROM sharetile WHERE tile_name=ptile_name;
+	  			CALL update_turn(p_name);
+	ELSE if partt1 = part2b2 then
+		UPDATE board
+	  	SET
+		  	btile=ptile_name,
+		  	firstvalue=NULL,
+			secondvalue=partt2
+	  	WHERE secondvalue=partt2;
+	  	
+	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
+	  	CALL update_turn(p_name);
+	
+	ELSE if  partt2 = part1b1 then
+		UPDATE board
+	  	SET
+		  	btile=ptile_name,
+		  	secondvalue=NULL,
+		  	firstvalue=partt1
+	  	WHERE firstvalue=partt1;
+	  	
+	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
+	  	CALL update_turn(p_name);
+			
+	ELSE if partt2 = part2b2 then
+		UPDATE board
+	  	SET
+		  	btile=ptile_name,
+		  	firstvaule=NULL,
+		  	secondvalue=partt1
+	  	WHERE firstvalue=partt1;
+	  	
+	  	DELETE FROM sharetile WHERE tile_name=ptile_name;
+	  	CALL update_turn(p_name);
+	ELSE
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You cannot place this tile here';
+  
+  	END IF;
+  		END IF;
+  			END IF;
+  				END IF;
+  					END IF;
+END//
+DELIMITER ;
+	
+	
+	
+	
+	
+	
+	
 	
 */
 
